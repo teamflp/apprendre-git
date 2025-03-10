@@ -138,10 +138,30 @@
 		/*---------------------- Pre/Code + Copy button ----------------------*/
 		pre {
 			border-radius: 5px;
-			margin-top: 0.5rem;
+			margin-top: 0;
 			position: relative;
 			overflow: auto;
+
+			/* plus d'espace, pour éviter la collision */
 		}
+
+
+		body.dark-mode code[class*="language-"] {
+			color: #eee;
+			/* texte clair */
+			background-color: #333;
+			/* fond plus sombre */
+			color: inherit;
+			/* texte blanc par défaut */
+			line-height: 1.9;
+			white-space: pre-wrap;
+			/* pour éviter les retours à la ligne */
+			word-break: break-all;
+			/* pour éviter les coupures de mots */
+			padding: 0.5rem !important;
+			/* moins de padding */
+		}
+
 
 		.copy-btn {
 			position: absolute;
@@ -150,6 +170,7 @@
 			font-size: 0.8rem;
 			padding: 2px 8px;
 			z-index: 10;
+			border: 1px solid #ddd;
 		}
 
 		/*---------------------- Footer ----------------------*/
@@ -162,18 +183,32 @@
 		}
 
 		/* Couleurs par défaut (mode clair) */
-		.language-bash, .language-yaml {
+		.language-bash,
+		.language-yaml {
 			background-color: #f3f3f3;
-			padding: 1rem;
+			padding: 0.5rem;
 			border-radius: 5px;
 			margin-top: 1rem;
 			transition: background-color 0.3s ease;
 		}
 
 		/* Quand on est en mode dark */
-		body.dark-mode .language-bash, body.dark-mode .language-yaml {
-			background-color: #333; /* fond plus sombre */
+		body.dark-mode .language-bash,
+		body.dark-mode .language-yaml {
+			background-color: #333;
+			/* fond plus sombre */
+			color: inherit;
+			/* texte blanc par défaut */
+			line-height: 1.5;
+			/* ou 1.5 */
 		}
+
+		/* Réduire voire annuler la marge en haut */
+		pre.language-bash {
+			margin-top: 0 !important;
+			padding-top: 0.5rem; /* Ou ce que tu préfères */
+		}
+
 
 
 		/* Footer en mode dark (comme déjà mentionné) */
@@ -202,7 +237,7 @@
 
 		/*--- Menu responsive (petits écrans) ---*/
 		@media (max-width: 768px) {
-        #navbarTOC {
+			#navbarTOC {
 				position: static;
 				width: 100%;
 				height: auto;
@@ -212,6 +247,7 @@
 				background-color: #ffffffcc;
 				padding: 1rem 0.5rem;
 			}
+
 			.contentWithToc {
 				margin-left: 0;
 			}
@@ -220,16 +256,22 @@
 			#menuTopBar {
 				display: flex;
 			}
+
 			#navbarTOC {
-				transform: translateX(-100%); /* Hors écran */
+				transform: translateX(-100%);
+				/* Hors écran */
 				width: 100%;
 			}
+
 			#navbarTOC.open {
 				transform: translateX(0);
 			}
+
 			.contentWithToc {
-				margin-left: 0; /* plus de sidebar dans la mise en page */
+				margin-left: 0;
+				/* plus de sidebar dans la mise en page */
 			}
+
 			.hamburgerBtn {
 				float: right;
 				display: block;
@@ -238,10 +280,10 @@
 			}
 
 			.hero {
-				margin-top: -800px; /* Pour éviter le chevauchement */
+				margin-top: -800px;
+				/* Pour éviter le chevauchement */
 			}
 		}
-		
 	</style>
 </head>
 
@@ -253,330 +295,348 @@
 	<!-- Barre top mobile -->
 	<nav class="navbar navbar-light bg-light d-md-none" id="menuTopBar">
 		<div class="container-fluid">
-		<!-- Titre / Logo -->
-		<span class="navbar-brand fw-bold">Cours Git</span>
-	
-		<!-- Bouton Hamburger -->
-		<button class="navbar-toggler" type="button" id="hamburgerBtn" style="border:none; background:none;">
-			<i class="fas fa-bars"></i>
-		</button>
+			<!-- Titre / Logo -->
+			<span class="navbar-brand fw-bold">Cours Git</span>
+
+			<!-- Bouton Hamburger -->
+			<button class="navbar-toggler" type="button" id="hamburgerBtn" style="border:none; background:none;">
+				<i class="fas fa-bars"></i>
+			</button>
 		</div>
 	</nav>
-	
-	
+
 	<!-- Menu Table des Matières (Responsive) -->
 	<nav id="navbarTOC">
-	  <h5>Table des Matières</h5>
-	  <a href="#introduction">1. Introduction</a>
-	  <a href="#installation">2. Installation & Config</a>
-	  <a href="#depots">3. Dépôts</a>
-	  <a href="#modifications">4. Suivi & Commit</a>
-	  <a href="#branches">5. Branches</a>
-	  <a href="#fusion">6. Merge & Conflits</a>
-	  <a href="#rebase">7. Rebase</a>
-	  <a href="#comparaison">8. Comparaison & Analyse</a>
-	  <a href="#annuler">9. Annuler/Commits</a>
-	  <a href="#stash">10. Stash</a>
-	  <a href="#depots-distants">11. Distants & Collab</a>
-	  <a href="#tags">12. Tags</a>
-	  <a href="#submodules">13. Submodules</a>
-	  <a href="#avancees">14. Avancées & Utilitaires</a>
-	  <a href="#bonnes-pratiques">15. Bonnes Pratiques</a>
-	  <a href="#tableau-commands">Tableau Complet</a>
-	  <a href="#exemples">Exemples Concrets</a>
-	  <a href="#exercices-pieges">Exercices & Pièges</a>
-	  <a href="#commit-conventions">Conventions Commit</a>
-	  <a href="#github-actions">CI/CD GitHub</a>
-	  <a href="#glossaire">Glossaire Git</a>
-	  <a href="#conclusion">Conclusion</a>
-	
-	  <hr/>
-	  <button class="btn btn-sm btn-dark" id="toggleDarkMode">Dark Mode</button>
+		<h5>Table des Matières</h5>
+		<a href="#introduction">1. Introduction</a>
+		<a href="#installation">2. Installation & Config</a>
+		<a href="#depots">3. Dépôts</a>
+		<a href="#modifications">4. Suivi & Commit</a>
+		<a href="#branches">5. Branches</a>
+		<a href="#fusion">6. Merge & Conflits</a>
+		<a href="#rebase">7. Rebase</a>
+		<a href="#comparaison">8. Comparaison & Analyse</a>
+		<a href="#annuler">9. Annuler/Commits</a>
+		<a href="#stash">10. Stash</a>
+		<a href="#depots-distants">11. Distants & Collab</a>
+		<a href="#tags">12. Tags</a>
+		<a href="#submodules">13. Submodules</a>
+		<a href="#avancees">14. Avancées & Utilitaires</a>
+		<a href="#bonnes-pratiques">15. Bonnes Pratiques</a>
+		<a href="#tableau-commands">Tableau Complet</a>
+		<a href="#exemples">Exemples Concrets</a>
+		<a href="#exercices-pieges">Exercices & Pièges</a>
+		<a href="#commit-conventions">Conventions Commit</a>
+		<a href="#github-actions">CI/CD GitHub</a>
+		<a href="#glossaire">Glossaire Git</a>
+		<a href="#conclusion">Conclusion</a>
+
+		<hr />
+		<button class="btn btn-sm btn-dark" id="toggleDarkMode">Dark Mode</button>
 	</nav>
-	
+
 	<!-- Contenu principal (décalé par rapport au menu) -->
 	<div class="contentWithToc">
 
 		<!-- Hero -->
 		<div class="hero">
-		  <div class="container">
-			<h1 class="fw-bold">Apprendre à utiliser les commandes Git</h1>
-			<p class="fst-italic">Par <strong>G.G. Paterne</strong></p>
-		  </div>
+			<div class="container">
+				<h1 class="fw-bold">Apprendre à utiliser les commandes Git</h1>
+				<p class="fst-italic">Par <strong>G.G. Paterne</strong></p>
+			</div>
 		</div>
-	  
+
 		<div class="container my-4">
-	  
-		  <!-- Recherche code -->
-		  <input type="text" class="form-control" id="searchBar" placeholder="Filtrer les snippets de code…"/>
-	  
-		  <!-- (1) INTRODUCTION -->
-		  <section id="introduction">
-			<h2>1. Introduction à Git</h2>
-			<h3>Qu’est-ce que Git ?</h3>
-			<p>
-			  Git est un outil (logiciel) pour suivre les changements dans le code.  
-			  Il permet de créer un historique de toutes les modifications.  
-			  On peut aussi travailler à plusieurs dessus, sans se marcher sur les pieds.
-			</p>
-			<p><strong>Pourquoi utiliser Git ?</strong></p>
-			<ul>
-			  <li>Revenir à une version antérieure si on casse quelque chose.</li>
-			  <li>Travailler à plusieurs sur le même projet, mais sur différentes branches.</li>
-			  <li>Garder un historique de tous les commits (changements).</li>
-			</ul>
 
-	
-			<!-- Bouton de téléchargement -->
-			<a href="Apprendre-git-par-la-pratique.pdf" class="btn btn-primary mt-3" download="CoursCompletGit">
-				<i class="fas fa-download"></i>Télécharger le cours complet (PDF)
-			</a>
+			<!-- Recherche code -->
+			<input type="text" class="form-control" id="searchBar" placeholder="Filtrer les snippets de code…" />
 
-			<hr/>
-		  </section>
-	  
-		  <!-- (2) INSTALLATION & CONFIG -->
-		  <section id="installation">
-			<h2>2. Installation et configuration</h2>
-			<h3>Installation</h3>
-			<p>
-			  Pour utiliser Git, on doit l’installer sur l’ordinateur.  
-			  Sur Linux Ubuntu/Debian, on peut faire :
-			</p>
-	<pre class="language-bash">
+			<!-- (1) INTRODUCTION -->
+			<section id="introduction">
+				<h2>1. Introduction à Git</h2>
+				<h3>Qu’est-ce que Git ?</h3>
+				<p>
+					Git est un outil (logiciel) pour suivre les changements dans le code.
+					Il permet de créer un historique de toutes les modifications.
+					On peut aussi travailler à plusieurs dessus, sans se marcher sur les pieds.
+				</p>
+				<p><strong>Pourquoi utiliser Git ?</strong></p>
+				<ul>
+					<li>Revenir à une version antérieure si on casse quelque chose.</li>
+					<li>Travailler à plusieurs sur le même projet, mais sur différentes branches.</li>
+					<li>Garder un historique de tous les commits (changements).</li>
+				</ul>
+
+
+				<!-- Bouton de téléchargement -->
+				<a href="Apprendre-git-par-la-pratique.pdf" class="btn btn-primary mt-3" download="CoursCompletGit">
+					<i class="fas fa-download"></i>Télécharger le cours complet (PDF)
+				</a>
+
+				<hr />
+			</section>
+
+			<!-- (2) INSTALLATION & CONFIG -->
+			<section id="installation">
+				<h2>2. Installation et configuration</h2>
+				<h3>Installation</h3>
+				<p>
+					Pour utiliser Git, on doit l’installer sur l’ordinateur.
+					Sur Linux Ubuntu/Debian, on peut faire :
+				</p>
+				<p>
+					Sur Windows ou Mac, on peut télécharger l’installeur sur le site officiel :
+					<a href="https://git-scm.com/download" target="_blank">https://git-scm.com/download</a>
+				</p>
+
+<pre class="language-bash">
+	<div>
 		<button class="btn btn-light copy-btn">Copier</button>
+		<button class="btn btn-light" data-clipboard-target="#code1">Copier</button>
+	</div>
+	
 <code>
 sudo apt update
-sudo apt install git</code>
-	</pre>
-		
-			<h3>Configuration globale</h3>
-			<p>Donner son nom et email pour que Git sache qui fait les commits :</p>
-<pre class="language-bash">
+sudo apt install git
+</code>
+</pre>
+
+	<p>Ces deux commandes mettent à jour la liste des paquets et installent Git.</p>
+
+
+				<h3>Configuration globale</h3>
+				<p>Donner son nom et email pour que Git sache qui fait les commits :</p>
+				<pre class="language-bash">
 	<button class="btn btn-light copy-btn">Copier</button>
 <code>
-git config --global user.name "Votre Nom"
+git config --global user.name "Votre Nom" 
 git config --global user.email "votre.email@example.com"</code>
 </pre>
-			<p>On peut choisir son éditeur préféré, comme nano ou vim :</p>
-<pre class="language-bash">
+				<p>On peut choisir son éditeur préféré, comme nano ou vim :</p>
+				<pre class="language-bash">
 	<button class="btn btn-light copy-btn">Copier</button>
 <code>
 git config --global core.editor "nano"</code>
 </pre>
-			<p>Pour voir toutes les configs :</p>
-<pre class="language-bash">
+<p>	
+	Cette commande configure nano comme éditeur par défaut.
+</p>
+				<p>Pour voir toutes les configs :</p>
+				<pre class="language-bash">
 	<button class="btn btn-light copy-btn">Copier</button>
 <code>
 git config --list</code>
 </pre>
-		  </section>
-	  
-		  <!-- (3) DEPOTS -->
-		  <section id="depots">
-			<h2>3. Initialiser et gérer un dépôt</h2>
-			<h3>Initialiser un nouveau dépôt</h3>
-			<p>
-			  Pour commencer à suivre un projet avec Git, on fait :
-			</p>
-<pre class="language-bash">
+			</section>
+
+			<!-- (3) DEPOTS -->
+			<section id="depots">
+				<h2>3. Initialiser et gérer un dépôt</h2>
+				<h3>Initialiser un nouveau dépôt</h3>
+				<p>
+					Pour commencer à suivre un projet avec Git, on fait :
+				</p>
+				<pre class="language-bash">
 	<button class="btn btn-light copy-btn">Copier</button>
 <code>
 git init</code>
 </pre>
-			<p>
-			  Cela crée un dossier caché <code>.git</code> qui contient toutes les infos de suivi (commits, historique...).  
-			</p>
-	  
-			<h3>Cloner un dépôt existant</h3>
-			<p>
-			  Si un projet existe déjà sur GitHub ou ailleurs, on peut le copier localement :
-			</p>
-<pre class="language-bash">
+				<p>
+					Cela crée un dossier caché <code>.git</code> qui contient toutes les infos de suivi (commits,
+					historique...).
+				</p>
+
+				<h3>Cloner un dépôt existant</h3>
+				<p>
+					Si un projet existe déjà sur GitHub ou ailleurs, on peut le copier localement :
+				</p>
+				<pre class="language-bash">
 	<button class="btn btn-light copy-btn">Copier</button>
 <code>
 git clone https://github.com/utilisateur/projet.git</code>
 </pre>
-			<p>
-			  Cela crée un dossier avec tout le code et l’historique.  
-			</p>
-	  
-			<h3>Ajouter un dépôt distant</h3>
-			<p>
-			  Pour lier son dossier local à un dépôt en ligne (ex: GitHub), on utilise :
-			</p>
-<pre class="language-bash">
+				<p>
+					Cela crée un dossier avec tout le code et l’historique.
+				</p>
+
+				<h3>Ajouter un dépôt distant</h3>
+				<p>
+					Pour lier son dossier local à un dépôt en ligne (ex: GitHub), on utilise :
+				</p>
+				<pre class="language-bash">
 	<button class="btn btn-light copy-btn">Copier</button>
 <code>
 git remote add origin https://github.com/utilisateur/projet.git</code>
 </pre>
-	  
-			<h3>Lister / Renommer / Supprimer un dépôt distant</h3>
-<pre class="language-bash">
+
+				<h3>Lister / Renommer / Supprimer un dépôt distant</h3>
+				<pre class="language-bash">
 	<button class="btn btn-light copy-btn">Copier</button>
 <code>
 git remote -v              # Voir les dépôts distants
 git remote rename origin old   # Renommer 'origin' en 'old'
 git remote remove origin       # Supprimer le remote 'origin'</code>
 </pre>
-		  </section>
-	  
-		  <!-- (4) SUIVI & COMMIT -->
-		  <section id="modifications">
-			<h2>4. Suivi et validation des modifications</h2>
-			<h3>Vérifier l'état</h3>
-			<p>Pour voir quels fichiers sont modifiés ou non suivis :</p>
-<pre class="language-bash">
+			</section>
+
+			<!-- (4) SUIVI & COMMIT -->
+			<section id="modifications">
+				<h2>4. Suivi et validation des modifications</h2>
+				<h3>Vérifier l'état</h3>
+				<p>Pour voir quels fichiers sont modifiés ou non suivis :</p>
+				<pre class="language-bash">
 	<button class="btn btn-light copy-btn">Copier</button>
 <code>
 git status</code>
 </pre>
-	  
-			<h3>Ajouter des fichiers</h3>
-			<p>
-			  Avant de faire un commit, on doit ajouter les fichiers dans la “zone de staging” :
-			</p>
-<pre class="language-bash">
+
+				<h3>Ajouter des fichiers</h3>
+				<p>
+					Avant de faire un commit, on doit ajouter les fichiers dans la “zone de staging” :
+				</p>
+				<pre class="language-bash">
 	<button class="btn btn-light copy-btn">Copier</button>
 <code>
 git add fichier.txt
 git add .</code>
 </pre>
-			<p>
-			  Le premier ajoute un seul fichier, le second ajoute tout ce qui est modifié/nouveau.
-			</p>
-	  
-			<h3>Créer un commit</h3>
-			<p>
-			  Pour enregistrer définitivement les changements dans l’historique :
-			</p>
-<pre class="language-bash">
+				<p>
+					Le premier ajoute un seul fichier, le second ajoute tout ce qui est modifié/nouveau.
+				</p>
+
+				<h3>Créer un commit</h3>
+				<p>
+					Pour enregistrer définitivement les changements dans l’historique :
+				</p>
+				<pre class="language-bash">
 	<button class="btn btn-light copy-btn">Copier</button>
 <code>
 git commit -m "Description du changement"</code>
 </pre>
-<p>On peut tout faire d’un coup (pour les fichiers déjà suivis) : <code>git commit -am "message"</code></p>
-	  
-			<h3>Afficher l’historique</h3>
-			<p>Voir la liste de tous les commits déjà faits :</p>
-<pre class="language-bash">
+				<p>On peut tout faire d’un coup (pour les fichiers déjà suivis) : <code>git commit -am "message"</code>
+				</p>
+
+				<h3>Afficher l’historique</h3>
+				<p>Voir la liste de tous les commits déjà faits :</p>
+				<pre class="language-bash">
 	<button class="btn btn-light copy-btn">Copier</button>
 <code>
 git log
 git log --oneline
 git log --graph --decorate --oneline</code>
 </pre>
-		  </section>
-	  
-		  <!-- (5) BRANCHES -->
-		  <section id="branches">
-			<h2>5. Branches et navigation</h2>
-			<h3>Créer et lister</h3>
-			<p>Pour voir ou créer une branche :</p>
-<pre class="language-bash">
+			</section>
+
+			<!-- (5) BRANCHES -->
+			<section id="branches">
+				<h2>5. Branches et navigation</h2>
+				<h3>Créer et lister</h3>
+				<p>Pour voir ou créer une branche :</p>
+				<pre class="language-bash">
 	<button class="btn btn-light copy-btn">Copier</button>
 <code>
 git branch
 git branch nouvelle-branche</code>
 </pre>
-	  
-			<h3>Changer de branche</h3>
-			<p>On se déplace sur une branche existante :</p>
-<pre class="language-bash">
+
+				<h3>Changer de branche</h3>
+				<p>On se déplace sur une branche existante :</p>
+				<pre class="language-bash">
 	<button class="btn btn-light copy-btn">Copier</button>
 <code>
 git checkout nouvelle-branche</code>
 </pre>
-<p>Ou on la crée et on y va d’un coup :</p>
-<pre class="language-bash">
+				<p>Ou on la crée et on y va d’un coup :</p>
+				<pre class="language-bash">
 	<button class="btn btn-light copy-btn">Copier</button>
 <code>
 git checkout -b nouvelle-branche</code>
 </pre>
-	  
-			<h3>Renommer / Supprimer une branche</h3>
-<pre class="language-bash">
+
+				<h3>Renommer / Supprimer une branche</h3>
+				<pre class="language-bash">
 	<button class="btn btn-light copy-btn">Copier</button>
 <code>
 git branch -m ancien_nom nouveau_nom   # Renommer
 git branch -d branche            # Supprimer une branche fusionnée
 git branch -D branche            # Supprimer quand pas fusionnée</code>
 </pre>
-		  </section>
-	  
-		  <!-- (6) MERGE & CONFLITS -->
-		  <section id="fusion">
-			<h2>6. Merge (Fusion) et Conflits</h2>
-			<h3>Fusionner deux branches</h3>
-			<p>
-			  On se place sur la branche où on veut intégrer les changements (souvent main ou master), puis on merge :
-			</p>
-<pre class="language-bash">
+			</section>
+
+			<!-- (6) MERGE & CONFLITS -->
+			<section id="fusion">
+				<h2>6. Merge (Fusion) et Conflits</h2>
+				<h3>Fusionner deux branches</h3>
+				<p>
+					On se place sur la branche où on veut intégrer les changements (souvent main ou master), puis on
+					merge :
+				</p>
+				<pre class="language-bash">
 	<button class="btn btn-light copy-btn">Copier</button>
 <code>
 git checkout main
 git merge nouvelle-branche</code>
 </pre>
-	  
-			<h3>Conflits</h3>
-			<p>
-			  S’il y a des conflits, Git arrête le merge et on doit résoudre à la main :
-			</p>
-<pre class="language-bash">
+
+				<h3>Conflits</h3>
+				<p>
+					S’il y a des conflits, Git arrête le merge et on doit résoudre à la main :
+				</p>
+				<pre class="language-bash">
 	<button class="btn btn-light copy-btn">Copier</button>
 <code>
 git add fichier_conflit.txt
 git commit -m "Résolution du conflit"</code>
 </pre>
-	  
-			<h3>Merge “no fast-forward”</h3>
-<pre class="language-bash">
+
+				<h3>Merge “no fast-forward”</h3>
+				<pre class="language-bash">
 	<button class="btn btn-light copy-btn">Copier</button>
 <code>
 git merge --no-ff nouvelle-branche</code>
 </pre>
-			<p>
-			  Crée un commit de merge même si on peut faire un fast-forward, pour garder une trace.
-			</p>
-		  </section>
-	  
-		  <!-- (7) REBASE -->
-		  <section id="rebase">
-			<h2>7. Rebase (Réécriture de l’historique)</h2>
-			<p>
-			  Rebase permet de rejouer une série de commits au-dessus d’une autre branche,  
-			  ce qui rend l’historique plus “linéaire”.
-			</p>
-	<pre class="language-bash">
+				<p>
+					Crée un commit de merge même si on peut faire un fast-forward, pour garder une trace.
+				</p>
+			</section>
+
+			<!-- (7) REBASE -->
+			<section id="rebase">
+				<h2>7. Rebase (Réécriture de l’historique)</h2>
+				<p>
+					Rebase permet de rejouer une série de commits au-dessus d’une autre branche,
+					ce qui rend l’historique plus “linéaire”.
+				</p>
+				<pre class="language-bash">
 	<button class="btn btn-light copy-btn">Copier</button>
 <code>
 git checkout ma-branche
 git rebase main</code>
 	</pre>
-	  
-			<h3>Rebase interactif</h3>
-			<p>
-			  Pour modifier l’ordre des commits, en fusionner plusieurs (squash), etc. :
-			</p>
-<pre class="language-bash">
+
+				<h3>Rebase interactif</h3>
+				<p>
+					Pour modifier l’ordre des commits, en fusionner plusieurs (squash), etc. :
+				</p>
+				<pre class="language-bash">
 	<button class="btn btn-light copy-btn">Copier</button>
 <code>
 git rebase -i HEAD~3</code>
 </pre>
-			<p>
-			  On édite ensuite la liste des commits dans un éditeur.
-			</p>
-			<p><strong>Attention :</strong> ne pas rebaser des branches déjà poussées,  
-			sinon on réécrit l’historique partagé (ça peut gêner les collègues).</p>
-		  </section>
-	  
-		  <!-- (8) COMPARAISON & ANALYSE -->
-		  <section id="comparaison">
-			<h2>8. Comparaison & Analyse</h2>
-			<p>
-			  Quelques commandes utiles pour comparer ou analyser l’historique :
-			</p>
-<pre class="language-bash">
+				<p>
+					On édite ensuite la liste des commits dans un éditeur.
+				</p>
+				<p><strong>Attention :</strong> ne pas rebaser des branches déjà poussées,
+					sinon on réécrit l’historique partagé (ça peut gêner les collègues).</p>
+			</section>
+
+			<!-- (8) COMPARAISON & ANALYSE -->
+			<section id="comparaison">
+				<h2>8. Comparaison & Analyse</h2>
+				<p>
+					Quelques commandes utiles pour comparer ou analyser l’historique :
+				</p>
+				<pre class="language-bash">
 	<button class="btn btn-light copy-btn">Copier</button>
 <code>
 git diff                # Voir ce qui a changé avant commit
@@ -588,26 +648,26 @@ git bisect good <commit_ou_tag>
 git log -p              # Voir les changements en détail par commit
 </code>
 </pre>
-		  </section>
-	  
-		  <!-- (9) ANNULER/COMMITS -->
-		  <section id="annuler">
-			<h2>9. Annuler ou corriger des commits</h2>
-			<h3>Revert</h3>
-			<p>
-			  Crée un commit inverse pour annuler un commit précédent :
-			</p>
-<pre class="language-bash">
+			</section>
+
+			<!-- (9) ANNULER/COMMITS -->
+			<section id="annuler">
+				<h2>9. Annuler ou corriger des commits</h2>
+				<h3>Revert</h3>
+				<p>
+					Crée un commit inverse pour annuler un commit précédent :
+				</p>
+				<pre class="language-bash">
 	<button class="btn btn-light copy-btn">Copier</button>
 <code>
 git revert <commit_hash></code>
 </pre>
-	  
-			<h3>Reset</h3>
-			<p>
-			  Reculer dans l’historique, avec la possibilité de garder ou non les changements :
-			</p>
-<pre class="language-bash">
+
+				<h3>Reset</h3>
+				<p>
+					Reculer dans l’historique, avec la possibilité de garder ou non les changements :
+				</p>
+				<pre class="language-bash">
 	<button class="btn btn-light copy-btn">Copier</button>
 <code>
 # Garde les modifs mais enlève le commit
@@ -616,25 +676,25 @@ git reset --soft HEAD~1
 # Efface complètement les modifs du dernier commit
 git reset --hard HEAD~1</code>
 </pre>
-	  
-			<h3>Amend</h3>
-			<p>
-			  Pour modifier le dernier commit (changer son message ou ajouter un fichier oublié) :
-			</p>
-<pre class="language-bash">
+
+				<h3>Amend</h3>
+				<p>
+					Pour modifier le dernier commit (changer son message ou ajouter un fichier oublié) :
+				</p>
+				<pre class="language-bash">
 	<button class="btn btn-light copy-btn">Copier</button>
 <code>
 git commit --amend</code>
 </pre>
-		  </section>
-	  
-		  <!-- (10) STASH -->
-		  <section id="stash">
-			<h2>10. Stash : mettre de côté des modifs</h2>
-			<p>
-			  On peut sauvegarder temporairement son travail sans faire de commit final :
-			</p>
-<pre class="language-bash">
+			</section>
+
+			<!-- (10) STASH -->
+			<section id="stash">
+				<h2>10. Stash : mettre de côté des modifs</h2>
+				<p>
+					On peut sauvegarder temporairement son travail sans faire de commit final :
+				</p>
+				<pre class="language-bash">
 	<button class="btn btn-light copy-btn">Copier</button>
 <code>
 git stash
@@ -642,15 +702,15 @@ git stash list
 git stash pop
 git stash apply</code>
 </pre>
-		  </section>
-	  
-		  <!-- (11) DISTANTS & COLLAB -->
-		  <section id="depots-distants">
-			<h2>11. Dépôts Distants & Collaboration</h2>
-			<p>
-			  Quelques commandes pour synchroniser avec un serveur (GitHub, GitLab…) :
-			</p>
-<pre class="language-bash">
+			</section>
+
+			<!-- (11) DISTANTS & COLLAB -->
+			<section id="depots-distants">
+				<h2>11. Dépôts Distants & Collaboration</h2>
+				<p>
+					Quelques commandes pour synchroniser avec un serveur (GitHub, GitLab…) :
+				</p>
+				<pre class="language-bash">
 	<button class="btn btn-light copy-btn">Copier</button>
 <code>
 git fetch
@@ -658,49 +718,49 @@ git pull
 git push
 git push -u origin branche</code>
 </pre>
-			<p>
-			  <strong>Fork & Pull Request :</strong> sur GitHub, vous pouvez forker un repo, faire vos modifs,
-			  puis ouvrir une Pull Request pour proposer vos changements au projet d’origine.
-			</p>
-		  </section>
-	  
-		  <!-- (12) TAGS -->
-		  <section id="tags">
-			<h2>12. Gestion des tags</h2>
-			<p>
-			  Les tags servent souvent à marquer des versions (v1.0, v2.0…).
-			</p>
-<pre class="language-bash">
+				<p>
+					<strong>Fork & Pull Request :</strong> sur GitHub, vous pouvez forker un repo, faire vos modifs,
+					puis ouvrir une Pull Request pour proposer vos changements au projet d’origine.
+				</p>
+			</section>
+
+			<!-- (12) TAGS -->
+			<section id="tags">
+				<h2>12. Gestion des tags</h2>
+				<p>
+					Les tags servent souvent à marquer des versions (v1.0, v2.0…).
+				</p>
+				<pre class="language-bash">
 	<button class="btn btn-light copy-btn">Copier</button>
 <code>
 git tag
 git tag -a v1.0 -m "Version stable"
 git push origin --tags</code>
 </pre>
-		  </section>
-	  
-		  <!-- (13) SUBMODULES -->
-		  <section id="submodules">
-			<h2>13. Submodules (Sous-modules)</h2>
-			<p>
-			  On peut inclure un autre dépôt Git à l’intérieur du nôtre (ex: librairie partagée).
-			</p>
-<pre class="language-bash">
+			</section>
+
+			<!-- (13) SUBMODULES -->
+			<section id="submodules">
+				<h2>13. Submodules (Sous-modules)</h2>
+				<p>
+					On peut inclure un autre dépôt Git à l’intérieur du nôtre (ex: librairie partagée).
+				</p>
+				<pre class="language-bash">
 	<button class="btn btn-light copy-btn">Copier</button>
 <code>
 git submodule add <URL>
 git submodule init
 git submodule update</code>
 </pre>
-		  </section>
-	  
-		  <!-- (14) AVANCEES & UTILITAIRES -->
-		  <section id="avancees">
-			<h2>14. Commandes avancées & utilitaires</h2>
-			<p>
-			  Voici quelques commandes plus “spéciales” :
-			</p>
-<pre class="language-bash">
+			</section>
+
+			<!-- (14) AVANCEES & UTILITAIRES -->
+			<section id="avancees">
+				<h2>14. Commandes avancées & utilitaires</h2>
+				<p>
+					Voici quelques commandes plus “spéciales” :
+				</p>
+				<pre class="language-bash">
 	<button class="btn btn-light copy-btn">Copier</button>
 <code>
 git cherry-pick <commit>      # Prendre un commit précis d’une autre branche
@@ -710,406 +770,413 @@ git archive --format=zip HEAD > code.zip  # Exporter le code sans l'historique
 git shortlog               # Liste des commits regroupés par auteur
 </code>
 </pre>
-		  </section>
-	  
-		  <!-- (15) BONNES PRATIQUES -->
-		  <section id="bonnes-pratiques">
-			<h2>15. Bonnes pratiques</h2>
-			<ol>
-			  <li>Commits fréquents & atomiques (petites étapes faciles à comprendre).</li>
-			  <li>Messages de commit clairs (expliquez “pourquoi” et pas juste “ce qui a changé”).</li>
-			  <li>Utiliser des branches descriptives (ex: <code>feature/login</code>, <code>fix/bug-42</code>). </li>
-			  <li>Revue de code via Pull Requests (pour un avis extérieur, moins de bugs). </li>
-			  <li>Éviter de réécrire l’historique partagé (risque de casser le repo de l’équipe). </li>
-			  <li>Maintenir un <code>.gitignore</code> (exclure fichiers inutiles, logs, etc.). </li>
-			</ol>
-		  </section>
-	  
-		  <!-- TABLEAU COMPLET DES COMMANDES -->
-		  <section id="tableau-commands">
-			<div class="table-responsive mt-3">
-				<h2>Tableau complet des commandes Git</h2>
-				<p>Retrouvez ci-dessous un récapitulatif complet :</p>
+			</section>
+
+			<!-- (15) BONNES PRATIQUES -->
+			<section id="bonnes-pratiques">
+				<h2>15. Bonnes pratiques</h2>
+				<ol>
+					<li>Commits fréquents & atomiques (petites étapes faciles à comprendre).</li>
+					<li>Messages de commit clairs (expliquez “pourquoi” et pas juste “ce qui a changé”).</li>
+					<li>Utiliser des branches descriptives (ex: <code>feature/login</code>, <code>fix/bug-42</code>).
+					</li>
+					<li>Revue de code via Pull Requests (pour un avis extérieur, moins de bugs). </li>
+					<li>Éviter de réécrire l’historique partagé (risque de casser le repo de l’équipe). </li>
+					<li>Maintenir un <code>.gitignore</code> (exclure fichiers inutiles, logs, etc.). </li>
+				</ol>
+			</section>
+
+			<!-- TABLEAU COMPLET DES COMMANDES -->
+			<section id="tableau-commands">
 				<div class="table-responsive mt-3">
-				  <table class="table table-bordered table-hover align-middle">
-					<thead class="table-dark">
-					  <tr>
-						<th>Commande</th>
-						<th>Utilisation</th>
-						<th>Explication</th>
-						<th>Avantage ✅</th>
-						<th>Inconvénient 🚨</th>
-					  </tr>
-					</thead>
-					<tbody>
-					  <!-- Liste COMPLETE (non tronquée) -->
-					  <tr>
-						<td><strong>git init</strong></td>
-						<td><code>git init</code></td>
-						<td>Initialise un nouveau dépôt Git (création du dossier <code>.git/</code>).</td>
-						<td>Démarrer facilement un nouveau projet.</td>
-						<td>Crée un dépôt vide (peut nécessiter config/dépôt distant).</td>
-					  </tr>
-					  <tr>
-						<td><strong>git clone</strong></td>
-						<td><code>git clone URL [dossier]</code></td>
-						<td>Copie un dépôt distant (ou local) dans un nouveau dossier.</td>
-						<td>Récupération rapide d’un projet existant et de son historique.</td>
-						<td>Peut être volumineux si le repo est très gros.</td>
-					  </tr>
-					  <tr>
-						<td><strong>git remote add</strong></td>
-						<td><code>git remote add &lt;nom&gt; &lt;URL&gt;</code></td>
-						<td>Associe un dépôt distant (ex: <code>origin</code>) à l’URL spécifiée.</td>
-						<td>Permet de pousser/puller vers un dépôt en ligne (GitHub...).</td>
-						<td>Erreur possible si l’on se trompe d’URL.</td>
-					  </tr>
-					  <tr>
-						<td><strong>git remote rename</strong></td>
-						<td><code>git remote rename &lt;old&gt; &lt;new&gt;</code></td>
-						<td>Renomme un dépôt distant (ex. <code>origin</code> → <code>oldorigin</code>).</td>
-						<td>Clarifie le nom (en cas de multiples remotes).</td>
-						<td>Scripts/CI peuvent être impactés si le nom change.</td>
-					  </tr>
-					  <tr>
-						<td><strong>git remote remove</strong></td>
-						<td><code>git remote remove &lt;nom&gt;</code></td>
-						<td>Supprime un dépôt distant de la configuration Git.</td>
-						<td>Nettoie la liste des remotes inutiles.</td>
-						<td>Plus de push/pull possible vers ce remote si besoin.</td>
-					  </tr>
-					  <tr>
-						<td><strong>git status</strong></td>
-						<td><code>git status</code></td>
-						<td>Affiche l’état des fichiers : suivis, non suivis, prêts à être commit, etc.</td>
-						<td>Vue rapide et claire des changements.</td>
-						<td>Aucun inconvénient majeur.</td>
-					  </tr>
-					  <tr>
-						<td><strong>git add</strong></td>
-						<td><code>git add fichier</code> / <code>git add .</code></td>
-						<td>Ajoute des fichiers dans la zone de staging (préparation au commit).</td>
-						<td>Contrôle précis sur ce qu’on veut commiter.</td>
-						<td>Si on oublie un fichier, il ne sera pas dans le commit.</td>
-					  </tr>
-					  <tr>
-						<td><strong>git commit</strong></td>
-						<td><code>git commit -m "msg"</code></td>
-						<td>Crée un instantané (commit) des changements validés.</td>
-						<td>Construit l’historique avec un message descriptif.</td>
-						<td>Un mauvais message gêne la compréhension de l’historique.</td>
-					  </tr>
-					  <tr>
-						<td><strong>git commit -am</strong></td>
-						<td><code>git commit -am "msg"</code></td>
-						<td>Combine l’ajout et le commit pour les fichiers déjà suivis.</td>
-						<td>Gain de temps pour modifications rapides.</td>
-						<td>Ne gère pas les nouveaux fichiers non suivis.</td>
-					  </tr>
-					  <tr>
-						<td><strong>git commit --amend</strong></td>
-						<td><code>git commit --amend</code></td>
-						<td>Modifie le dernier commit (message ou fichiers).</td>
-						<td>Corrige un oubli ou un message trop vague.</td>
-						<td>Réécrit l’historique, déconseillé si déjà poussé.</td>
-					  </tr>
-					  <tr>
-						<td><strong>git log</strong></td>
-						<td><code>git log</code>, <code>git log --oneline</code></td>
-						<td>Affiche l’historique des commits (détaillé ou succinct).</td>
-						<td>Bonne vision de l’évolution du projet.</td>
-						<td>Peut être verbeux sur gros projets.</td>
-					  </tr>
-					  <tr>
-						<td><strong>git checkout</strong></td>
-						<td><code>git checkout &lt;branche&gt;</code> / <code>git checkout -- &lt;fichier&gt;</code></td>
-						<td>Change de branche OU annule les modifs d’un fichier local.</td>
-						<td>Navigation aisée entre branches.</td>
-						<td>Perte possible de changements non commit si on oublie de stasher.</td>
-					  </tr>
-					  <tr>
-						<td><strong>git branch</strong></td>
-						<td><code>git branch &lt;nom&gt;</code></td>
-						<td>Crée une branche ou liste les branches (si pas d’argument).</td>
-						<td>Organise le travail (nouvelles fonctionnalités).</td>
-						<td>Trop de branches peuvent créer la confusion.</td>
-					  </tr>
-					  <tr>
-						<td><strong>git branch -m</strong></td>
-						<td><code>git branch -m &lt;ancien&gt; &lt;nouveau&gt;</code></td>
-						<td>Renomme une branche locale.</td>
-						<td>Corrige un nom mal choisi.</td>
-						<td>Peut troubler d’autres si la branche est partagée.</td>
-					  </tr>
-					  <tr>
-						<td><strong>git branch -d</strong></td>
-						<td><code>git branch -d &lt;nom&gt;</code></td>
-						<td>Supprime une branche locale (fusionnée).</td>
-						<td>Nettoyage des branches terminées.</td>
-						<td>Impossible si non fusionnée (risque de perte).</td>
-					  </tr>
-					  <tr>
-						<td><strong>git branch -D</strong></td>
-						<td><code>git branch -D &lt;nom&gt;</code></td>
-						<td>Supprime une branche locale sans vérification.</td>
-						<td>Forcer la suppression d’une branche obsolète.</td>
-						<td>Risque de perte définitive de commits.</td>
-					  </tr>
-					  <tr>
-						<td><strong>git merge</strong></td>
-						<td><code>git merge &lt;branche&gt;</code></td>
-						<td>Fusionne la branche spécifiée dans la branche courante.</td>
-						<td>Combine facilement plusieurs flux de travail.</td>
-						<td>Peut générer des conflits, crée un commit de merge.</td>
-					  </tr>
-					  <tr>
-						<td><strong>git merge --no-ff</strong></td>
-						<td><code>git merge --no-ff &lt;branche&gt;</code></td>
-						<td>Fusion sans fast-forward, garde un commit de merge dédié.</td>
-						<td>Historique plus lisible (commit de merge conservé).</td>
-						<td>Même si un fast-forward était possible, on force un commit supplémentaire.</td>
-					  </tr>
-					  <tr>
-						<td><strong>git rebase</strong></td>
-						<td><code>git rebase &lt;branche&gt;</code></td>
-						<td>“Rejoue” les commits de la branche courante sur une autre branche.</td>
-						<td>Historique linéaire et propre (pas de commit de merge).</td>
-						<td>Réécrit l’historique (dangereux si partagé).</td>
-					  </tr>
-					  <tr>
-						<td><strong>git rebase -i</strong></td>
-						<td><code>git rebase -i HEAD~n</code></td>
-						<td>Rebase interactif (modifier l’ordre, fusionner, renommer des commits).</td>
-						<td>Historique très propre, possibilité de “squasher”.</td>
-						<td>Complexe, risque de collisions ou pertes.</td>
-					  </tr>
-					  <tr>
-						<td><strong>git rebase --continue</strong></td>
-						<td><code>git rebase --continue</code></td>
-						<td>Poursuit le rebase après résolution de conflit.</td>
-						<td>Finalise le rebase proprement.</td>
-						<td>Faut résoudre tous les conflits un par un.</td>
-					  </tr>
-					  <tr>
-						<td><strong>git rebase --abort</strong></td>
-						<td><code>git rebase --abort</code></td>
-						<td>Annule le rebase en cours et revient à l’état initial.</td>
-						<td>Utile si trop de conflits.</td>
-						<td>Annule tout le travail du rebase.</td>
-					  </tr>
-					  <tr>
-						<td><strong>git diff</strong></td>
-						<td><code>git diff</code>, <code>git diff --staged</code></td>
-						<td>Compare les différences non validées ou indexées.</td>
-						<td>Repère précisément les lignes modifiées.</td>
-						<td>Peut être long à lire sur gros projets.</td>
-					  </tr>
-					  <tr>
-						<td><strong>git blame</strong></td>
-						<td><code>git blame &lt;fichier&gt;</code></td>
-						<td>Montre, ligne par ligne, qui a modifié le fichier et quand.</td>
-						<td>Pratique pour attribuer un changement précis.</td>
-						<td>Peu lisible si gros fichier avec multiples auteurs.</td>
-					  </tr>
-					  <tr>
-						<td><strong>git bisect</strong></td>
-						<td><code>git bisect start</code>, <code>git bisect bad</code>, <code>git bisect good</code></td>
-						<td>Recherche binaire d’un commit fautif.</td>
-						<td>Méthode puissante pour isoler un bug.</td>
-						<td>Processus parfois long.</td>
-					  </tr>
-					  <tr>
-						<td><strong>git revert</strong></td>
-						<td><code>git revert &lt;commit&gt;</code></td>
-						<td>Crée un commit annulant un autre commit.</td>
-						<td>Historique conservé sans tout écraser.</td>
-						<td>Peut allonger l’historique si nombreux revert.</td>
-					  </tr>
-					  <tr>
-						<td><strong>git reset --soft</strong></td>
-						<td><code>git reset --soft HEAD~1</code></td>
-						<td>Reculer un commit en gardant les modifications dans le staging.</td>
-						<td>Permet de refaire un commit propre.</td>
-						<td>Réécrit l’historique (dangereux si déjà poussé).</td>
-					  </tr>
-					  <tr>
-						<td><strong>git reset --hard</strong></td>
-						<td><code>git reset --hard HEAD~1</code></td>
-						<td>Reculer un commit en supprimant définitivement les modifs.</td>
-						<td>Retour rapide à un état stable.</td>
-						<td>Perte irréversible des changements.</td>
-					  </tr>
-					  <tr>
-						<td><strong>git stash</strong></td>
-						<td><code>git stash</code></td>
-						<td>Met de côté les modifs non commitées.</td>
-						<td>Utile pour passer sur une autre branche sans perdre son travail.</td>
-						<td>On peut oublier les stash si on ne les liste pas.</td>
-					  </tr>
-					  <tr>
-						<td><strong>git stash pop</strong></td>
-						<td><code>git stash pop</code></td>
-						<td>Récupère et supprime le dernier stash.</td>
-						<td>Permet de reprendre rapidement son travail mis en attente.</td>
-						<td>Conflits possibles si code très différent entre-temps.</td>
-					  </tr>
-					  <tr>
-						<td><strong>git stash apply</strong></td>
-						<td><code>git stash apply [stash@{n}]</code></td>
-						<td>Applique un stash (sans le supprimer).</td>
-						<td>Peut réutiliser plusieurs fois le même stash.</td>
-						<td>Attention aux duplications si on l’applique plusieurs fois.</td>
-					  </tr>
-					  <tr>
-						<td><strong>git stash list</strong></td>
-						<td><code>git stash list</code></td>
-						<td>Affiche la liste de tous les stashes mis de côté.</td>
-						<td>Visualise rapidement les réserves de code.</td>
-						<td>Pas d’inconvénient notable.</td>
-					  </tr>
-					  <tr>
-						<td><strong>git fetch</strong></td>
-						<td><code>git fetch [remote] [branche]</code></td>
-						<td>Récupère les nouveautés sans les fusionner.</td>
-						<td>Voir ce qui a changé avant d’intégrer.</td>
-						<td>Étape supplémentaire (pull ou merge) pour la fusion finale.</td>
-					  </tr>
-					  <tr>
-						<td><strong>git pull</strong></td>
-						<td><code>git pull</code></td>
-						<td>Récupère et fusionne directement les modifications du dépôt distant.</td>
-						<td>Simple pour rester à jour.</td>
-						<td>Peut engendrer des conflits si modifs simultanées.</td>
-					  </tr>
-					  <tr>
-						<td><strong>git push</strong></td>
-						<td><code>git push</code></td>
-						<td>Envoie les commits locaux vers la branche distante.</td>
-						<td>Partage facile avec l’équipe.</td>
-						<td>Conflits possibles si historique local en retard.</td>
-					  </tr>
-					  <tr>
-						<td><strong>git push -u</strong></td>
-						<td><code>git push -u origin &lt;branche&gt;</code></td>
-						<td>Pousse la branche locale et la configure avec le dépôt distant.</td>
-						<td>Simplifie les futurs push/pull.</td>
-						<td>Peut créer plusieurs branches distantes si mal utilisé.</td>
-					  </tr>
-					  <tr>
-						<td><strong>git push --force</strong></td>
-						<td><code>git push --force</code> ou <code>git push --force-with-lease</code></td>
-						<td>Force la réécriture de l’historique distant.</td>
-						<td>Utile après un rebase ou amend déjà poussé.</td>
-						<td>Risque de perdre le travail d’autres contributeurs.</td>
-					  </tr>
-					  <tr>
-						<td><strong>git tag</strong></td>
-						<td><code>git tag &lt;nom&gt;</code></td>
-						<td>Crée un tag léger (non annoté) sur le commit courant.</td>
-						<td>Identifier rapidement une version.</td>
-						<td>Pas de message ni métadonnées.</td>
-					  </tr>
-					  <tr>
-						<td><strong>git tag -a</strong></td>
-						<td><code>git tag -a v1.0 -m "message"</code></td>
-						<td>Crée un tag annoté (avec message).</td>
-						<td>Historique complet sur la version (auteur, date, message).</td>
-						<td>Trop de tags peut devenir confus.</td>
-					  </tr>
-					  <tr>
-						<td><strong>git push origin --tags</strong></td>
-						<td><code>git push origin --tags</code></td>
-						<td>Envoie tous les tags locaux vers le dépôt distant.</td>
-						<td>Partage public des différentes versions marquées.</td>
-						<td>Peut pousser des tags créés par erreur.</td>
-					  </tr>
-					  <tr>
-						<td><strong>git submodule add</strong></td>
-						<td><code>git submodule add &lt;URL&gt;</code></td>
-						<td>Ajoute un dépôt Git comme sous-module dans le projet.</td>
-						<td>Gère plusieurs projets dans un seul repo principal.</td>
-						<td>Gestion parfois complexe si sous-modules changent souvent.</td>
-					  </tr>
-					  <tr>
-						<td><strong>git submodule init</strong></td>
-						<td><code>git submodule init</code></td>
-						<td>Initialise les sous-modules d’un projet déjà cloné.</td>
-						<td>Indispensable après un clone contenant des submodules.</td>
-						<td>Étape supplémentaire qui peut être oubliée.</td>
-					  </tr>
-					  <tr>
-						<td><strong>git submodule update</strong></td>
-						<td><code>git submodule update</code></td>
-						<td>Met à jour les sous-modules à la version indiquée dans le repo principal.</td>
-						<td>Garde les sous-modules cohérents avec la référence choisie.</td>
-						<td>Parfois besoin de <code>--recursive</code> (sous-sous-modules).</td>
-					  </tr>
-					  <tr>
-						<td><strong>git clone --recurse-submodules</strong></td>
-						<td><code>git clone --recurse-submodules &lt;URL&gt;</code></td>
-						<td>Clone un projet et initialise les sous-modules en une seule commande.</td>
-						<td>Pratique pour un projet multi-modules complet.</td>
-						<td>Sinon il faut <code>init</code> et <code>update</code> manuellement.</td>
-					  </tr>
-					  <tr>
-						<td><strong>git cherry-pick</strong></td>
-						<td><code>git cherry-pick &lt;commit&gt;</code></td>
-						<td>Copie un commit précis (d’une autre branche) dans la branche courante.</td>
-						<td>Importe une correction ou fonctionnalité sans fusionner toute la branche.</td>
-						<td>Conflits possibles si dépendances entre commits.</td>
-					  </tr>
-					  <tr>
-						<td><strong>git reflog</strong></td>
-						<td><code>git reflog</code></td>
-						<td>Historique détaillé des actions (commits, checkout...) même effacées du log.</td>
-						<td>Permet de récupérer un commit perdu.</td>
-						<td>Lecture parfois confuse pour les débutants.</td>
-					  </tr>
-					  <tr>
-						<td><strong>git gc</strong></td>
-						<td><code>git gc</code></td>
-						<td>Nettoie/optimise la base de données Git (compression, purge objets obsolètes).</td>
-						<td>Réduit la taille du repo, améliore la performance.</td>
-						<td>À utiliser avec précaution (peut effacer définitivement certains objets).</td>
-					  </tr>
-					  <tr>
-						<td><strong>git archive</strong></td>
-						<td><code>git archive --format=zip HEAD &gt; code.zip</code></td>
-						<td>Crée une archive du contenu (sans l’historique complet).</td>
-						<td>Utile pour exporter une version rapidement.</td>
-						<td>Aucun suivi de l’historique dans l’archive.</td>
-					  </tr>
-					  <tr>
-						<td><strong>git shortlog</strong></td>
-						<td><code>git shortlog</code></td>
-						<td>Résumé des commits groupés par auteur.</td>
-						<td>Vision rapide de la contribution de chacun.</td>
-						<td>Manque de détails sur les changements eux-mêmes.</td>
-					  </tr>
-					</tbody>
-				  </table>
-			</div>
-			<p><strong>Remarques :</strong></p>
-			<ul>
-			  <li>Certaines commandes ont des variantes (ex. <code>-m</code>, <code>-p</code>, <code>--stat</code>).</li>
-			  <li>Les avantages/inconvénients dépendent du contexte (projet solo/équipe, etc.).</li>
-			</ul>
-		  </section>
-	  
-		  <!-- EXEMPLES CONCRETS -->
-		  <section id="exemples">
-			<h2>Exemples Concrets</h2>
-			<h4>1. Annuler le dernier commit en gardant les modifs</h4>
-<pre class="language-bash">
+					<h2>Tableau complet des commandes Git</h2>
+					<p>Retrouvez ci-dessous un récapitulatif complet :</p>
+					<div class="table-responsive mt-3">
+						<table class="table table-bordered table-hover align-middle">
+							<thead class="table-dark">
+								<tr>
+									<th>Commande</th>
+									<th>Utilisation</th>
+									<th>Explication</th>
+									<th>Avantage ✅</th>
+									<th>Inconvénient 🚨</th>
+								</tr>
+							</thead>
+							<tbody>
+								<!-- Liste COMPLETE (non tronquée) -->
+								<tr>
+									<td><strong>git init</strong></td>
+									<td><code>git init</code></td>
+									<td>Initialise un nouveau dépôt Git (création du dossier <code>.git/</code>).</td>
+									<td>Démarrer facilement un nouveau projet.</td>
+									<td>Crée un dépôt vide (peut nécessiter config/dépôt distant).</td>
+								</tr>
+								<tr>
+									<td><strong>git clone</strong></td>
+									<td><code>git clone URL [dossier]</code></td>
+									<td>Copie un dépôt distant (ou local) dans un nouveau dossier.</td>
+									<td>Récupération rapide d’un projet existant et de son historique.</td>
+									<td>Peut être volumineux si le repo est très gros.</td>
+								</tr>
+								<tr>
+									<td><strong>git remote add</strong></td>
+									<td><code>git remote add &lt;nom&gt; &lt;URL&gt;</code></td>
+									<td>Associe un dépôt distant (ex: <code>origin</code>) à l’URL spécifiée.</td>
+									<td>Permet de pousser/puller vers un dépôt en ligne (GitHub...).</td>
+									<td>Erreur possible si l’on se trompe d’URL.</td>
+								</tr>
+								<tr>
+									<td><strong>git remote rename</strong></td>
+									<td><code>git remote rename &lt;old&gt; &lt;new&gt;</code></td>
+									<td>Renomme un dépôt distant (ex. <code>origin</code> → <code>oldorigin</code>).
+									</td>
+									<td>Clarifie le nom (en cas de multiples remotes).</td>
+									<td>Scripts/CI peuvent être impactés si le nom change.</td>
+								</tr>
+								<tr>
+									<td><strong>git remote remove</strong></td>
+									<td><code>git remote remove &lt;nom&gt;</code></td>
+									<td>Supprime un dépôt distant de la configuration Git.</td>
+									<td>Nettoie la liste des remotes inutiles.</td>
+									<td>Plus de push/pull possible vers ce remote si besoin.</td>
+								</tr>
+								<tr>
+									<td><strong>git status</strong></td>
+									<td><code>git status</code></td>
+									<td>Affiche l’état des fichiers : suivis, non suivis, prêts à être commit, etc.</td>
+									<td>Vue rapide et claire des changements.</td>
+									<td>Aucun inconvénient majeur.</td>
+								</tr>
+								<tr>
+									<td><strong>git add</strong></td>
+									<td><code>git add fichier</code> / <code>git add .</code></td>
+									<td>Ajoute des fichiers dans la zone de staging (préparation au commit).</td>
+									<td>Contrôle précis sur ce qu’on veut commiter.</td>
+									<td>Si on oublie un fichier, il ne sera pas dans le commit.</td>
+								</tr>
+								<tr>
+									<td><strong>git commit</strong></td>
+									<td><code>git commit -m "msg"</code></td>
+									<td>Crée un instantané (commit) des changements validés.</td>
+									<td>Construit l’historique avec un message descriptif.</td>
+									<td>Un mauvais message gêne la compréhension de l’historique.</td>
+								</tr>
+								<tr>
+									<td><strong>git commit -am</strong></td>
+									<td><code>git commit -am "msg"</code></td>
+									<td>Combine l’ajout et le commit pour les fichiers déjà suivis.</td>
+									<td>Gain de temps pour modifications rapides.</td>
+									<td>Ne gère pas les nouveaux fichiers non suivis.</td>
+								</tr>
+								<tr>
+									<td><strong>git commit --amend</strong></td>
+									<td><code>git commit --amend</code></td>
+									<td>Modifie le dernier commit (message ou fichiers).</td>
+									<td>Corrige un oubli ou un message trop vague.</td>
+									<td>Réécrit l’historique, déconseillé si déjà poussé.</td>
+								</tr>
+								<tr>
+									<td><strong>git log</strong></td>
+									<td><code>git log</code>, <code>git log --oneline</code></td>
+									<td>Affiche l’historique des commits (détaillé ou succinct).</td>
+									<td>Bonne vision de l’évolution du projet.</td>
+									<td>Peut être verbeux sur gros projets.</td>
+								</tr>
+								<tr>
+									<td><strong>git checkout</strong></td>
+									<td><code>git checkout &lt;branche&gt;</code> /
+										<code>git checkout -- &lt;fichier&gt;</code></td>
+									<td>Change de branche OU annule les modifs d’un fichier local.</td>
+									<td>Navigation aisée entre branches.</td>
+									<td>Perte possible de changements non commit si on oublie de stasher.</td>
+								</tr>
+								<tr>
+									<td><strong>git branch</strong></td>
+									<td><code>git branch &lt;nom&gt;</code></td>
+									<td>Crée une branche ou liste les branches (si pas d’argument).</td>
+									<td>Organise le travail (nouvelles fonctionnalités).</td>
+									<td>Trop de branches peuvent créer la confusion.</td>
+								</tr>
+								<tr>
+									<td><strong>git branch -m</strong></td>
+									<td><code>git branch -m &lt;ancien&gt; &lt;nouveau&gt;</code></td>
+									<td>Renomme une branche locale.</td>
+									<td>Corrige un nom mal choisi.</td>
+									<td>Peut troubler d’autres si la branche est partagée.</td>
+								</tr>
+								<tr>
+									<td><strong>git branch -d</strong></td>
+									<td><code>git branch -d &lt;nom&gt;</code></td>
+									<td>Supprime une branche locale (fusionnée).</td>
+									<td>Nettoyage des branches terminées.</td>
+									<td>Impossible si non fusionnée (risque de perte).</td>
+								</tr>
+								<tr>
+									<td><strong>git branch -D</strong></td>
+									<td><code>git branch -D &lt;nom&gt;</code></td>
+									<td>Supprime une branche locale sans vérification.</td>
+									<td>Forcer la suppression d’une branche obsolète.</td>
+									<td>Risque de perte définitive de commits.</td>
+								</tr>
+								<tr>
+									<td><strong>git merge</strong></td>
+									<td><code>git merge &lt;branche&gt;</code></td>
+									<td>Fusionne la branche spécifiée dans la branche courante.</td>
+									<td>Combine facilement plusieurs flux de travail.</td>
+									<td>Peut générer des conflits, crée un commit de merge.</td>
+								</tr>
+								<tr>
+									<td><strong>git merge --no-ff</strong></td>
+									<td><code>git merge --no-ff &lt;branche&gt;</code></td>
+									<td>Fusion sans fast-forward, garde un commit de merge dédié.</td>
+									<td>Historique plus lisible (commit de merge conservé).</td>
+									<td>Même si un fast-forward était possible, on force un commit supplémentaire.</td>
+								</tr>
+								<tr>
+									<td><strong>git rebase</strong></td>
+									<td><code>git rebase &lt;branche&gt;</code></td>
+									<td>“Rejoue” les commits de la branche courante sur une autre branche.</td>
+									<td>Historique linéaire et propre (pas de commit de merge).</td>
+									<td>Réécrit l’historique (dangereux si partagé).</td>
+								</tr>
+								<tr>
+									<td><strong>git rebase -i</strong></td>
+									<td><code>git rebase -i HEAD~n</code></td>
+									<td>Rebase interactif (modifier l’ordre, fusionner, renommer des commits).</td>
+									<td>Historique très propre, possibilité de “squasher”.</td>
+									<td>Complexe, risque de collisions ou pertes.</td>
+								</tr>
+								<tr>
+									<td><strong>git rebase --continue</strong></td>
+									<td><code>git rebase --continue</code></td>
+									<td>Poursuit le rebase après résolution de conflit.</td>
+									<td>Finalise le rebase proprement.</td>
+									<td>Faut résoudre tous les conflits un par un.</td>
+								</tr>
+								<tr>
+									<td><strong>git rebase --abort</strong></td>
+									<td><code>git rebase --abort</code></td>
+									<td>Annule le rebase en cours et revient à l’état initial.</td>
+									<td>Utile si trop de conflits.</td>
+									<td>Annule tout le travail du rebase.</td>
+								</tr>
+								<tr>
+									<td><strong>git diff</strong></td>
+									<td><code>git diff</code>, <code>git diff --staged</code></td>
+									<td>Compare les différences non validées ou indexées.</td>
+									<td>Repère précisément les lignes modifiées.</td>
+									<td>Peut être long à lire sur gros projets.</td>
+								</tr>
+								<tr>
+									<td><strong>git blame</strong></td>
+									<td><code>git blame &lt;fichier&gt;</code></td>
+									<td>Montre, ligne par ligne, qui a modifié le fichier et quand.</td>
+									<td>Pratique pour attribuer un changement précis.</td>
+									<td>Peu lisible si gros fichier avec multiples auteurs.</td>
+								</tr>
+								<tr>
+									<td><strong>git bisect</strong></td>
+									<td><code>git bisect start</code>, <code>git bisect bad</code>,
+										<code>git bisect good</code></td>
+									<td>Recherche binaire d’un commit fautif.</td>
+									<td>Méthode puissante pour isoler un bug.</td>
+									<td>Processus parfois long.</td>
+								</tr>
+								<tr>
+									<td><strong>git revert</strong></td>
+									<td><code>git revert &lt;commit&gt;</code></td>
+									<td>Crée un commit annulant un autre commit.</td>
+									<td>Historique conservé sans tout écraser.</td>
+									<td>Peut allonger l’historique si nombreux revert.</td>
+								</tr>
+								<tr>
+									<td><strong>git reset --soft</strong></td>
+									<td><code>git reset --soft HEAD~1</code></td>
+									<td>Reculer un commit en gardant les modifications dans le staging.</td>
+									<td>Permet de refaire un commit propre.</td>
+									<td>Réécrit l’historique (dangereux si déjà poussé).</td>
+								</tr>
+								<tr>
+									<td><strong>git reset --hard</strong></td>
+									<td><code>git reset --hard HEAD~1</code></td>
+									<td>Reculer un commit en supprimant définitivement les modifs.</td>
+									<td>Retour rapide à un état stable.</td>
+									<td>Perte irréversible des changements.</td>
+								</tr>
+								<tr>
+									<td><strong>git stash</strong></td>
+									<td><code>git stash</code></td>
+									<td>Met de côté les modifs non commitées.</td>
+									<td>Utile pour passer sur une autre branche sans perdre son travail.</td>
+									<td>On peut oublier les stash si on ne les liste pas.</td>
+								</tr>
+								<tr>
+									<td><strong>git stash pop</strong></td>
+									<td><code>git stash pop</code></td>
+									<td>Récupère et supprime le dernier stash.</td>
+									<td>Permet de reprendre rapidement son travail mis en attente.</td>
+									<td>Conflits possibles si code très différent entre-temps.</td>
+								</tr>
+								<tr>
+									<td><strong>git stash apply</strong></td>
+									<td><code>git stash apply [stash@{n}]</code></td>
+									<td>Applique un stash (sans le supprimer).</td>
+									<td>Peut réutiliser plusieurs fois le même stash.</td>
+									<td>Attention aux duplications si on l’applique plusieurs fois.</td>
+								</tr>
+								<tr>
+									<td><strong>git stash list</strong></td>
+									<td><code>git stash list</code></td>
+									<td>Affiche la liste de tous les stashes mis de côté.</td>
+									<td>Visualise rapidement les réserves de code.</td>
+									<td>Pas d’inconvénient notable.</td>
+								</tr>
+								<tr>
+									<td><strong>git fetch</strong></td>
+									<td><code>git fetch [remote] [branche]</code></td>
+									<td>Récupère les nouveautés sans les fusionner.</td>
+									<td>Voir ce qui a changé avant d’intégrer.</td>
+									<td>Étape supplémentaire (pull ou merge) pour la fusion finale.</td>
+								</tr>
+								<tr>
+									<td><strong>git pull</strong></td>
+									<td><code>git pull</code></td>
+									<td>Récupère et fusionne directement les modifications du dépôt distant.</td>
+									<td>Simple pour rester à jour.</td>
+									<td>Peut engendrer des conflits si modifs simultanées.</td>
+								</tr>
+								<tr>
+									<td><strong>git push</strong></td>
+									<td><code>git push</code></td>
+									<td>Envoie les commits locaux vers la branche distante.</td>
+									<td>Partage facile avec l’équipe.</td>
+									<td>Conflits possibles si historique local en retard.</td>
+								</tr>
+								<tr>
+									<td><strong>git push -u</strong></td>
+									<td><code>git push -u origin &lt;branche&gt;</code></td>
+									<td>Pousse la branche locale et la configure avec le dépôt distant.</td>
+									<td>Simplifie les futurs push/pull.</td>
+									<td>Peut créer plusieurs branches distantes si mal utilisé.</td>
+								</tr>
+								<tr>
+									<td><strong>git push --force</strong></td>
+									<td><code>git push --force</code> ou <code>git push --force-with-lease</code></td>
+									<td>Force la réécriture de l’historique distant.</td>
+									<td>Utile après un rebase ou amend déjà poussé.</td>
+									<td>Risque de perdre le travail d’autres contributeurs.</td>
+								</tr>
+								<tr>
+									<td><strong>git tag</strong></td>
+									<td><code>git tag &lt;nom&gt;</code></td>
+									<td>Crée un tag léger (non annoté) sur le commit courant.</td>
+									<td>Identifier rapidement une version.</td>
+									<td>Pas de message ni métadonnées.</td>
+								</tr>
+								<tr>
+									<td><strong>git tag -a</strong></td>
+									<td><code>git tag -a v1.0 -m "message"</code></td>
+									<td>Crée un tag annoté (avec message).</td>
+									<td>Historique complet sur la version (auteur, date, message).</td>
+									<td>Trop de tags peut devenir confus.</td>
+								</tr>
+								<tr>
+									<td><strong>git push origin --tags</strong></td>
+									<td><code>git push origin --tags</code></td>
+									<td>Envoie tous les tags locaux vers le dépôt distant.</td>
+									<td>Partage public des différentes versions marquées.</td>
+									<td>Peut pousser des tags créés par erreur.</td>
+								</tr>
+								<tr>
+									<td><strong>git submodule add</strong></td>
+									<td><code>git submodule add &lt;URL&gt;</code></td>
+									<td>Ajoute un dépôt Git comme sous-module dans le projet.</td>
+									<td>Gère plusieurs projets dans un seul repo principal.</td>
+									<td>Gestion parfois complexe si sous-modules changent souvent.</td>
+								</tr>
+								<tr>
+									<td><strong>git submodule init</strong></td>
+									<td><code>git submodule init</code></td>
+									<td>Initialise les sous-modules d’un projet déjà cloné.</td>
+									<td>Indispensable après un clone contenant des submodules.</td>
+									<td>Étape supplémentaire qui peut être oubliée.</td>
+								</tr>
+								<tr>
+									<td><strong>git submodule update</strong></td>
+									<td><code>git submodule update</code></td>
+									<td>Met à jour les sous-modules à la version indiquée dans le repo principal.</td>
+									<td>Garde les sous-modules cohérents avec la référence choisie.</td>
+									<td>Parfois besoin de <code>--recursive</code> (sous-sous-modules).</td>
+								</tr>
+								<tr>
+									<td><strong>git clone --recurse-submodules</strong></td>
+									<td><code>git clone --recurse-submodules &lt;URL&gt;</code></td>
+									<td>Clone un projet et initialise les sous-modules en une seule commande.</td>
+									<td>Pratique pour un projet multi-modules complet.</td>
+									<td>Sinon il faut <code>init</code> et <code>update</code> manuellement.</td>
+								</tr>
+								<tr>
+									<td><strong>git cherry-pick</strong></td>
+									<td><code>git cherry-pick &lt;commit&gt;</code></td>
+									<td>Copie un commit précis (d’une autre branche) dans la branche courante.</td>
+									<td>Importe une correction ou fonctionnalité sans fusionner toute la branche.</td>
+									<td>Conflits possibles si dépendances entre commits.</td>
+								</tr>
+								<tr>
+									<td><strong>git reflog</strong></td>
+									<td><code>git reflog</code></td>
+									<td>Historique détaillé des actions (commits, checkout...) même effacées du log.
+									</td>
+									<td>Permet de récupérer un commit perdu.</td>
+									<td>Lecture parfois confuse pour les débutants.</td>
+								</tr>
+								<tr>
+									<td><strong>git gc</strong></td>
+									<td><code>git gc</code></td>
+									<td>Nettoie/optimise la base de données Git (compression, purge objets obsolètes).
+									</td>
+									<td>Réduit la taille du repo, améliore la performance.</td>
+									<td>À utiliser avec précaution (peut effacer définitivement certains objets).</td>
+								</tr>
+								<tr>
+									<td><strong>git archive</strong></td>
+									<td><code>git archive --format=zip HEAD &gt; code.zip</code></td>
+									<td>Crée une archive du contenu (sans l’historique complet).</td>
+									<td>Utile pour exporter une version rapidement.</td>
+									<td>Aucun suivi de l’historique dans l’archive.</td>
+								</tr>
+								<tr>
+									<td><strong>git shortlog</strong></td>
+									<td><code>git shortlog</code></td>
+									<td>Résumé des commits groupés par auteur.</td>
+									<td>Vision rapide de la contribution de chacun.</td>
+									<td>Manque de détails sur les changements eux-mêmes.</td>
+								</tr>
+							</tbody>
+						</table>
+					</div>
+					<p><strong>Remarques :</strong></p>
+					<ul>
+						<li>Certaines commandes ont des variantes (ex. <code>-m</code>, <code>-p</code>,
+							<code>--stat</code>).</li>
+						<li>Les avantages/inconvénients dépendent du contexte (projet solo/équipe, etc.).</li>
+					</ul>
+			</section>
+
+			<!-- EXEMPLES CONCRETS -->
+			<section id="exemples">
+				<h2>Exemples Concrets</h2>
+				<h4>1. Annuler le dernier commit en gardant les modifs</h4>
+				<pre class="language-bash">
 	<button class="btn btn-light copy-btn">Copier</button>
 <code>
 git reset --soft HEAD~1
 # Les fichiers restent modifiés
 </code>
 </pre>
-	  
-			<h4>2. Rebaser sa branche sur main</h4>
-<pre class="language-bash">
+
+				<h4>2. Rebaser sa branche sur main</h4>
+				<pre class="language-bash">
 	<button class="btn btn-light copy-btn">Copier</button>
 <code>
 git checkout ma-branche
@@ -1117,35 +1184,42 @@ git pull origin main
 git rebase main
 </code>
 </pre>
-		  </section>
-	  
-		  <!-- EXERCICES & PIEGES -->
-		  <section id="exercices-pieges">
-			<h2>Exercices & pièges courants</h2>
-			<h3>Exercices pratiques</h3>
-			<ul>
-			  <li><strong>Exercice 1 :</strong> Créer un dépôt local, y faire deux commits et pousser sur GitHub.</li>
-			  <li><strong>Exercice 2 :</strong> Créer une branche, y faire une modif, provoquer un conflit et le résoudre.</li>
-			  <li><strong>Exercice 3 :</strong> Faire un stash avant de changer de branche, puis le récupérer.</li>
-			</ul>
-	  
-			<h3>Pièges courants à éviter</h3>
-			<ul>
-			  <li><strong>Forcer un push</strong> : <code>git push --force</code> sans précaution risque d’écraser le travail d’autrui.</li>
-			  <li><strong>Réécrire l’historique partagé</strong> : rebase ou reset sur une branche déjà utilisée par d’autres.</li>
-			  <li><strong>Oublier stash</strong> : si on change de branche sans stasher, on peut perdre ses modifs.</li>
-			  <li><strong>Merge mal résolu</strong> : bien faire <code>git add</code> et <code>git commit</code> après le conflit.</li>
-			</ul>
-		  </section>
-	  
-		  <!-- CONVENTIONS DE COMMIT -->
-		  <section id="commit-conventions">
-			<h2>Conventions Commit</h2>
-			<p>
-			  Parfois on suit des règles pour les messages de commit (ex. <em>Conventional Commits</em>),
-			  afin de générer des changelogs automatiques, d’avoir une structure claire, etc.
-			</p>
-	<pre class="language-bash">
+			</section>
+
+			<!-- EXERCICES & PIEGES -->
+			<section id="exercices-pieges">
+				<h2>Exercices & pièges courants</h2>
+				<h3>Exercices pratiques</h3>
+				<ul>
+					<li><strong>Exercice 1 :</strong> Créer un dépôt local, y faire deux commits et pousser sur GitHub.
+					</li>
+					<li><strong>Exercice 2 :</strong> Créer une branche, y faire une modif, provoquer un conflit et le
+						résoudre.</li>
+					<li><strong>Exercice 3 :</strong> Faire un stash avant de changer de branche, puis le récupérer.
+					</li>
+				</ul>
+
+				<h3>Pièges courants à éviter</h3>
+				<ul>
+					<li><strong>Forcer un push</strong> : <code>git push --force</code> sans précaution risque d’écraser
+						le travail d’autrui.</li>
+					<li><strong>Réécrire l’historique partagé</strong> : rebase ou reset sur une branche déjà utilisée
+						par d’autres.</li>
+					<li><strong>Oublier stash</strong> : si on change de branche sans stasher, on peut perdre ses
+						modifs.</li>
+					<li><strong>Merge mal résolu</strong> : bien faire <code>git add</code> et <code>git commit</code>
+						après le conflit.</li>
+				</ul>
+			</section>
+
+			<!-- CONVENTIONS DE COMMIT -->
+			<section id="commit-conventions">
+				<h2>Conventions Commit</h2>
+				<p>
+					Parfois on suit des règles pour les messages de commit (ex. <em>Conventional Commits</em>),
+					afin de générer des changelogs automatiques, d’avoir une structure claire, etc.
+				</p>
+				<pre class="language-bash">
 	<button class="btn btn-light copy-btn">Copier</button>
 <code>
 feat: ajout fonctionnalité
@@ -1153,16 +1227,16 @@ fix: correction bug
 docs: mise à jour doc
 </code>
 	</pre>
-		  </section>
-	  
-		  <!-- CI/CD GITHUB ACTIONS -->
-		  <section id="github-actions">
-			<h2>CI/CD (GitHub Actions)</h2>
-			<p>
-			  Pour automatiser des tests ou un déploiement, on peut créer un fichier
-			  <code>.github/workflows/ci.yml</code> comme ceci :
-			</p>
-			<pre class="language-yaml">
+			</section>
+
+			<!-- CI/CD GITHUB ACTIONS -->
+			<section id="github-actions">
+				<h2>CI/CD (GitHub Actions)</h2>
+				<p>
+					Pour automatiser des tests ou un déploiement, on peut créer un fichier
+					<code>.github/workflows/ci.yml</code> comme ceci :
+				</p>
+				<pre class="language-yaml">
 			  <button class="btn btn-light copy-btn">Copier</button>
 <code>
 name: CI
@@ -1184,142 +1258,139 @@ jobs:
 		run: npm test
 </code>
 	</pre>
-		  </section>
-	  
-		  <!-- GLOSSAIRE GIT -->
-		  <section id="glossaire">
-			<h2>Glossaire Git</h2>
-			<ul>
-			  <li><strong>stash</strong> : mettre de côté des modifications non commit (temporaire).</li>
-			  <li><strong>rebase</strong> : rejouer des commits sur une autre base pour un historique plus linéaire.</li>
-			  <li><strong>fetch</strong> : télécharger les changements distants sans les fusionner (juste les voir).</li>
-			  <li><strong>fork</strong> : copier un dépôt (souvent sur GitHub) dans son espace perso.</li>
-			  <li><strong>cherry-pick</strong> : prendre un commit précis d’une autre branche et l’ajouter à la nôtre.</li>
-			  <li><strong>tag</strong> : étiquette (nom) sur un commit (souvent pour marquer une version stable).</li>
-			</ul>
-		  </section>
-	  
-		  <!-- CONCLUSION -->
-		  <section id="conclusion">
-			<h2>Conclusion</h2>
-			<p>
-			  Vous avez vu ici toutes les bases de Git, plus des parties avancées (rebase, stash, etc.).
-			  Entraînez-vous régulièrement pour retenir les commandes.
-			</p>
-			<p>
-			  Git est très puissant et utile quand on travaille à plusieurs ou qu’on veut garder une trace
-			  de chaque changement dans son projet.
-			</p>
-			<p><strong>Bonne pratique de Git et bon code !</strong></p>
+			</section>
 
-		  </section>
-	  
+			<!-- GLOSSAIRE GIT -->
+			<section id="glossaire">
+				<h2>Glossaire Git</h2>
+				<ul>
+					<li><strong>stash</strong> : mettre de côté des modifications non commit (temporaire).</li>
+					<li><strong>rebase</strong> : rejouer des commits sur une autre base pour un historique plus
+						linéaire.</li>
+					<li><strong>fetch</strong> : télécharger les changements distants sans les fusionner (juste les
+						voir).</li>
+					<li><strong>fork</strong> : copier un dépôt (souvent sur GitHub) dans son espace perso.</li>
+					<li><strong>cherry-pick</strong> : prendre un commit précis d’une autre branche et l’ajouter à la
+						nôtre.</li>
+					<li><strong>tag</strong> : étiquette (nom) sur un commit (souvent pour marquer une version stable).
+					</li>
+				</ul>
+			</section>
+
+			<!-- CONCLUSION -->
+			<section id="conclusion">
+				<h2>Conclusion</h2>
+				<p>
+					Vous avez vu ici toutes les bases de Git, plus des parties avancées (rebase, stash, etc.).
+					Entraînez-vous régulièrement pour retenir les commandes.
+				</p>
+				<p>
+					Git est très puissant et utile quand on travaille à plusieurs ou qu’on veut garder une trace
+					de chaque changement dans son projet.
+				</p>
+				<p><strong>Bonne pratique de Git et bon code !</strong></p>
+
+			</section>
+
 		</div><!-- Fin .container -->
-	  </div><!-- Fin .contentWithToc -->
-	
+	</div><!-- Fin .contentWithToc -->
+
 	<footer>
-	  <div class="container">
-		<p class="m-0">Cours réalisé par <strong>G.G. Paterne</strong> - Tous droits réservés</p>
-	  </div>
+		<div class="container">
+			<p class="m-0">Cours réalisé par <strong>G.G. Paterne</strong> - Tous droits réservés</p>
+		</div>
 	</footer>
-	
+
 	<!-- Bouton Scroll to Top -->
-	<button
-	  type="button"
-	  class="btn btn-danger btn-floating"
-	  id="btnScrollTop"
-	  data-mdb-ripple-color="light"
-	>
-	  ↑
+	<button type="button" class="btn btn-danger btn-floating" id="btnScrollTop" data-mdb-ripple-color="light">
+		↑
 	</button>
-	
+
 	<!-- MDB JavaScript -->
-	<script 
-	  src="https://cdnjs.cloudflare.com/ajax/libs/mdb-ui-kit/8.1.0/mdb.min.js">
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/mdb-ui-kit/8.1.0/mdb.min.js">
 	</script>
-	
+
 	<!-- Prism.js pour coloration syntaxique -->
-	<script
-	  src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js">
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js">
 	</script>
-	
+
 	<script>
 		// Barre de progression
 		const readingProgressBar = document.getElementById('readingProgress');
 		window.addEventListener('scroll', () => {
-		  const scrollPos = window.scrollY;
-		  const docHeight = document.documentElement.scrollHeight - window.innerHeight;
-		  const progress = (scrollPos / docHeight) * 100;
-		  readingProgressBar.style.width = progress + '%';
+			const scrollPos = window.scrollY;
+			const docHeight = document.documentElement.scrollHeight - window.innerHeight;
+			const progress = (scrollPos / docHeight) * 100;
+			readingProgressBar.style.width = progress + '%';
 		});
-	  
+
 		// Bouton ScrollTop
 		const btnScrollTop = document.getElementById('btnScrollTop');
 		window.addEventListener('scroll', () => {
-		  if (window.scrollY > 300) {
-			btnScrollTop.style.display = 'block';
-		  } else {
-			btnScrollTop.style.display = 'none';
-		  }
+			if (window.scrollY > 300) {
+				btnScrollTop.style.display = 'block';
+			} else {
+				btnScrollTop.style.display = 'none';
+			}
 		});
 		btnScrollTop.addEventListener('click', () => {
-		  window.scrollTo({ top: 0, behavior: 'smooth' });
+			window.scrollTo({ top: 0, behavior: 'smooth' });
 		});
-	  
+
 		// Dark/Light
 		const toggleDarkModeBtn = document.getElementById('toggleDarkMode');
 		toggleDarkModeBtn.addEventListener('click', () => {
-		  document.body.classList.toggle('dark-mode');
-		  if (document.body.classList.contains('dark-mode')) {
-			toggleDarkModeBtn.textContent = 'Light Mode';
-		  } else {
-			toggleDarkModeBtn.textContent = 'Dark Mode';
-		  }
+			document.body.classList.toggle('dark-mode');
+			if (document.body.classList.contains('dark-mode')) {
+				toggleDarkModeBtn.textContent = 'Light Mode';
+			} else {
+				toggleDarkModeBtn.textContent = 'Dark Mode';
+			}
 		});
-	  
+
 		// Boutons "Copier" code
 		const copyButtons = document.querySelectorAll('.copy-btn');
 		copyButtons.forEach((btn) => {
-		  btn.addEventListener('click', () => {
-			const codeBlock = btn.nextElementSibling;
-			if (codeBlock && codeBlock.tagName.toLowerCase() === 'code') {
-			  const textToCopy = codeBlock.innerText;
-			  navigator.clipboard.writeText(textToCopy)
-				.then(() => {
-				  btn.textContent = 'Copié !';
-				  setTimeout(() => { btn.textContent = 'Copier'; }, 1500);
-				})
-				.catch((err) => {
-				  console.error('Échec de la copie :', err);
-				});
-			}
-		  });
+			btn.addEventListener('click', () => {
+				const codeBlock = btn.nextElementSibling;
+				if (codeBlock && codeBlock.tagName.toLowerCase() === 'code') {
+					const textToCopy = codeBlock.innerText;
+					navigator.clipboard.writeText(textToCopy)
+						.then(() => {
+							btn.textContent = 'Copié !';
+							setTimeout(() => { btn.textContent = 'Copier'; }, 1500);
+						})
+						.catch((err) => {
+							console.error('Échec de la copie :', err);
+						});
+				}
+			});
 		});
-	  
+
 		// Recherche code
 		const searchInput = document.getElementById('searchBar');
 		searchInput.addEventListener('input', () => {
-		const query = searchInput.value.toLowerCase();
-		const codeBlocks = document.querySelectorAll('pre code');
-		codeBlocks.forEach(codeEl => {
-			const parentPre = codeEl.parentElement;
-			// Vérifie que le texte du code inclut la recherche
-			if (codeEl.innerText.toLowerCase().includes(query)) {
-			parentPre.classList.remove('hiddenBySearch');
-			} else {
-			parentPre.classList.add('hiddenBySearch');
-			}
+			const query = searchInput.value.toLowerCase();
+			const codeBlocks = document.querySelectorAll('pre code');
+			codeBlocks.forEach(codeEl => {
+				const parentPre = codeEl.parentElement;
+				// Vérifie que le texte du code inclut la recherche
+				if (codeEl.innerText.toLowerCase().includes(query)) {
+					parentPre.classList.remove('hiddenBySearch');
+				} else {
+					parentPre.classList.add('hiddenBySearch');
+				}
+			});
 		});
-});
 
-	  
+
 		// Hamburger
 		const hamburgerBtn = document.getElementById('hamburgerBtn');
 		const navbarTOC = document.getElementById('navbarTOC');
 		hamburgerBtn.addEventListener('click', () => {
-		  navbarTOC.classList.toggle('open');
+			navbarTOC.classList.toggle('open');
 		});
-	  </script>
-	</body>
+	</script>
+</body>
 
 </html>
