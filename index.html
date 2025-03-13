@@ -323,17 +323,19 @@
 		<a href="#submodules">13. Submodules</a>
 		<a href="#avancees">14. Avancées & Utilitaires</a>
 		<a href="#bonnes-pratiques">15. Bonnes Pratiques</a>
-		<a href="#tableau-commands">Tableau Complet</a>
-		<a href="#exemples">Exemples Concrets</a>
-		<a href="#exercices-pieges">Exercices & Pièges</a>
-		<a href="#commit-conventions">Conventions Commit</a>
-		<a href="#github-actions">CI/CD GitHub</a>
-		<a href="#glossaire">Glossaire Git</a>
-		<a href="#conclusion">Conclusion</a>
+		<a href="#commandes-avancees-git">16. Commandes Avancées de Git</a>
+		<a href="#tableau-commands">17. Tableau Complet</a>
+		<a href="#exemples">18. Exemples Concrets</a>
+		<a href="#exercices-pieges">19. Exercices & Pièges</a>
+		<a href="#commit-conventions">20. Conventions Commit</a>
+		<a href="#github-actions">21. CI/CD GitHub</a>
+		<a href="#glossaire">22. Glossaire Git</a>
+		<a href="#conclusion">23. Conclusion</a>
 
 		<hr />
 		<button class="btn btn-sm btn-dark" id="toggleDarkMode">Dark Mode</button>
 	</nav>
+
 
 	<!-- Contenu principal (décalé par rapport au menu) -->
 	<div class="contentWithToc">
@@ -603,31 +605,133 @@ git merge --no-ff nouvelle-branche</code>
 			<section id="rebase">
 				<h2>7. Rebase (Réécriture de l’historique)</h2>
 				<p>
-					Rebase permet de rejouer une série de commits au-dessus d’une autre branche,
-					ce qui rend l’historique plus “linéaire”.
+					La commande <code>git rebase</code> permet de rejouer une série de commits sur une autre branche. Cela permet d’obtenir un historique plus <em>linéaire</em> et lisible, en évitant les commits de fusion inutiles. Elle est particulièrement utile pour intégrer les dernières modifications d’une branche (ex. : <code>main</code>) dans votre branche de développement.
+				</p>
+
+				<h3>Rebase simple</h3>
+				<p>
+					Pour mettre à jour votre branche <code>ma-branche</code> avec les derniers commits de <code>main</code>, exécutez :
 				</p>
 				<pre class="language-bash">
-	<button class="btn btn-light copy-btn">Copier</button>
+		<button class="btn btn-light copy-btn">Copier</button>
 <code>
 git checkout ma-branche
-git rebase main</code>
+git rebase main
+</code>
 	</pre>
+				<p>
+					<strong>Exemple :</strong> Si vous travaillez sur une branche <code>feature</code> et que des modifications ont été apportées sur <code>main</code>, cette commande permet de réappliquer vos commits de <code>feature</code> au-dessus des derniers commits de <code>main</code>.
+				</p>
+
+				<h3>Gestion des conflits lors d'un rebase</h3>
+				<p>
+					Si des conflits surviennent pendant le rebase, Git interrompt l’opération pour que vous puissiez les résoudre. La procédure est la suivante :
+				</p>
+				<ul>
+					<li>
+						<strong>Identifier et résoudre le conflit :</strong> Ouvrez le(s) fichier(s) concerné(s) et modifiez les sections marquées par <code>&lt;&lt;&lt;&lt;&lt;&lt;</code>, <code>=======</code> et <code>&gt;&gt;&gt;&gt;&gt;&gt;</code> pour choisir le contenu approprié.
+					</li>
+					<li>
+						<strong>Ajouter le fichier résolu :</strong>
+						<pre class="language-bash">
+		<button class="btn btn-light copy-btn">Copier</button>
+<code>
+git add fichier_conflit.txt
+</code>
+			</pre>
+					</li>
+					<li>
+						<strong>Poursuivre le rebase :</strong>
+						<pre class="language-bash">
+		<button class="btn btn-light copy-btn">Copier</button>
+<code>
+git rebase --continue
+</code>
+			</pre>
+					</li>
+					<li>
+						<strong>Annuler le rebase :</strong> Si nécessaire, vous pouvez abandonner le rebase en cours avec :
+						<pre class="language-bash">
+		<button class="btn btn-light copy-btn">Copier</button>
+<code>
+git rebase --abort
+</code>
+			</pre>
+					</li>
+				</ul>
 
 				<h3>Rebase interactif</h3>
 				<p>
-					Pour modifier l’ordre des commits, en fusionner plusieurs (squash), etc. :
+					Le rebase interactif vous permet de modifier l’ordre des commits, de fusionner plusieurs commits (squash), de modifier leurs messages ou même de supprimer des commits. C’est une technique puissante pour nettoyer l’historique avant de fusionner une branche.
 				</p>
 				<pre class="language-bash">
-	<button class="btn btn-light copy-btn">Copier</button>
+		<button class="btn btn-light copy-btn">Copier</button>
 <code>
-git rebase -i HEAD~3</code>
-</pre>
+git rebase -i HEAD~3
+</code>
+	</pre>
 				<p>
-					On édite ensuite la liste des commits dans un éditeur.
+					Lancez cette commande depuis votre branche de développement. Un éditeur s’ouvrira avec une liste des 3 derniers commits, par exemple :
 				</p>
-				<p><strong>Attention :</strong> ne pas rebaser des branches déjà poussées,
-					sinon on réécrit l’historique partagé (ça peut gêner les collègues).</p>
+				<pre class="language-text">
+		<button class="btn btn-light copy-btn">Copier</button>
+<code>
+pick abc1234 Premier commit de la feature
+squash def5678 Second commit à fusionner avec le premier
+pick ghi9012 Troisième commit
+</code>
+	</pre>
+				<p>
+					Modifiez les mots-clés selon vos besoins (<code>pick</code>, <code>squash</code>, <code>reword</code>, etc.), sauvegardez et fermez l’éditeur. Git fusionnera alors les commits indiqués et vous demandera de confirmer ou modifier le message final.
+				</p>
+
+				<h3>Options avancées</h3>
+				<ul>
+					<li>
+						<strong>Utilisation de <code>--onto</code> :</strong>
+						<p>
+							Permet de repositionner une série de commits sur une nouvelle base, différente du parent direct. Par exemple, pour déplacer tous les commits de <code>feature</code> qui ne sont pas dans <code>base</code> sur <code>nouvelle-base</code> :
+						</p>
+						<pre class="language-bash">
+		<button class="btn btn-light copy-btn">Copier</button>
+<code>
+git checkout feature
+git rebase --onto nouvelle-base base feature
+</code>
+			</pre>
+					</li>
+					<li>
+						<strong>Résolution automatique avec <code>-Xours</code> ou <code>-Xtheirs</code> :</strong>
+						<p>
+							Ces options permettent de résoudre automatiquement les conflits en privilégiant votre version (<code>ours</code>) ou celle de la branche sur laquelle vous rebasez (<code>theirs</code>).
+							<em>Exemple :</em>
+						</p>
+						<pre class="language-bash">
+		<button class="btn btn-light copy-btn">Copier</button>
+<code>
+git rebase -Xtheirs main
+</code>
+			</pre>
+					</li>
+					<li>
+						<strong>Conservation des commits de fusion :</strong>
+						<p>
+							Par défaut, le rebase "aplati" l’historique en supprimant les commits de fusion. Pour conserver la topologie des fusions, utilisez l’option <code>--rebase-merges</code> :
+						</p>
+						<pre class="language-bash">
+		<button class="btn btn-light copy-btn">Copier</button>
+<code>
+git rebase --rebase-merges main
+</code>
+			</pre>
+					</li>
+				</ul>
+
+				<p>
+					<strong>Attention :</strong> N’effectuez pas de rebase sur des branches déjà poussées sur un dépôt partagé, car cela réécrit l’historique et peut perturber le travail de vos collègues. Il est recommandé de tester ces opérations sur des dépôts de test ou des branches locales avant de les utiliser en production.
+				</p>
 			</section>
+
 
 			<!-- (8) COMPARAISON & ANALYSE -->
 			<section id="comparaison">
@@ -784,6 +888,307 @@ git shortlog               # Liste des commits regroupés par auteur
 					<li>Maintenir un <code>.gitignore</code> (exclure fichiers inutiles, logs, etc.). </li>
 				</ol>
 			</section>
+
+			<!-- (16) COMMANDES AVANCÉES DE GIT -->
+			<section id="commandes-avancees-git">
+				<h2>16. Les Commandes Avancées de Git</h2>
+				<p>
+					Git propose de nombreuses commandes avancées permettant de gérer finement l’historique du dépôt, de résoudre des problèmes complexes ou d’automatiser certaines tâches. Voici quelques-unes de ces commandes avec leurs explications détaillées :
+				</p>
+
+				<h3>1. Git Rebase</h3>
+				<p>
+					<strong>Description :</strong> La commande <code>git rebase</code> permet de déplacer ou réappliquer une série de commits sur une nouvelle base, offrant ainsi un historique plus linéaire et propre.
+				</p>
+				<p><strong>Utilisations avancées :</strong></p>
+				<ul>
+					<li>
+						<em>Rebase simple :</em> Pour mettre à jour une branche de fonctionnalité avec les dernières modifications de la branche principale :
+						<pre class="language-bash">
+  <button class="btn btn-light copy-btn">Copier</button>
+<code>
+git checkout featureA
+git rebase main
+</code>
+      </pre>
+					</li>
+					<li>
+						<em>Rebase interactif :</em> Permet de modifier l’ordre des commits, de fusionner (squash), de réordonner ou supprimer certains commits. Par exemple :
+						<pre class="language-bash">
+  <button class="btn btn-light copy-btn">Copier</button>
+<code>
+git rebase -i HEAD~3
+</code>
+      </pre>
+						Dans l’éditeur, vous pourriez voir :
+						<pre class="language-text">
+  <button class="btn btn-light copy-btn">Copier</button>
+<code>
+pick abc1234 Premier commit de la feature
+squash def5678 Deuxième commit à fusionner avec le premier
+pick ghi9012 Troisième commit
+</code>
+      </pre>
+					</li>
+				</ul>
+
+				<h3>2. Git Cherry-pick</h3>
+				<p>
+					<strong>Description :</strong> <code>git cherry-pick</code> permet d’extraire un ou plusieurs commits spécifiques depuis une autre branche et de les appliquer sur la branche courante.
+				</p>
+				<p><strong>Utilisation typique :</strong> Par exemple, pour appliquer une correction critique directement sur la branche de production :</p>
+				<pre class="language-bash">
+  <button class="btn btn-light copy-btn">Copier</button>
+<code>
+git checkout production
+git cherry-pick &lt;commit_hash&gt;
+</code>
+  </pre>
+
+				<h3>3. Git Bisect</h3>
+				<p>
+					<strong>Description :</strong> <code>git bisect</code> est un outil de recherche dichotomique qui aide à identifier le commit précis ayant introduit un bug ou une régression.
+				</p>
+				<p><strong>Processus :</strong></p>
+				<ol>
+					<li>
+						Démarrer la recherche :
+						<pre class="language-bash">
+  <button class="btn btn-light copy-btn">Copier</button>
+<code>
+git bisect start
+</code>
+      </pre>
+					</li>
+					<li>
+						Marquer le commit avec le bug :
+						<pre class="language-bash">
+  <button class="btn btn-light copy-btn">Copier</button>
+<code>
+git bisect bad
+</code>
+      </pre>
+					</li>
+					<li>
+						Marquer un commit fonctionnel :
+						<pre class="language-bash">
+  <button class="btn btn-light copy-btn">Copier</button>
+<code>
+git bisect good &lt;commit_hash&gt;
+</code>
+      </pre>
+					</li>
+					<li>
+						Une fois identifié, réinitialiser le bisect :
+						<pre class="language-bash">
+  <button class="btn btn-light copy-btn">Copier</button>
+<code>
+git bisect reset
+</code>
+      </pre>
+					</li>
+				</ol>
+				<p><em>Astuce :</em> Vous pouvez automatiser ce processus en créant un script de test retournant 0 en cas de succès et 1 en cas d’échec.</p>
+
+				<h3>4. Git Stash</h3>
+				<p>
+					<strong>Description :</strong> La commande <code>git stash</code> sauvegarde temporairement des modifications non committées, permettant de nettoyer l’espace de travail sans perdre votre travail en cours.
+				</p>
+				<ul>
+					<li>
+						Sauvegarder avec un message :
+						<pre class="language-bash">
+  <button class="btn btn-light copy-btn">Copier</button>
+<code>
+git stash save "Travail en cours sur feature X"
+</code>
+      </pre>
+					</li>
+					<li>
+						Lister les stashes :
+						<pre class="language-bash">
+  <button class="btn btn-light copy-btn">Copier</button>
+<code>
+git stash list
+</code>
+      </pre>
+					</li>
+					<li>
+						Appliquer ou supprimer un stash spécifique :
+						<pre class="language-bash">
+  <button class="btn btn-light copy-btn">Copier</button>
+<code>
+git stash apply stash@{2}
+git stash drop stash@{2}
+</code>
+      </pre>
+					</li>
+				</ul>
+
+				<h3>5. Git Reflog</h3>
+				<p>
+					<strong>Description :</strong> <code>git reflog</code> conserve l’historique des déplacements de <code>HEAD</code>, permettant de retrouver des commits "perdus" ou de revenir à un état antérieur.
+				</p>
+				<p><strong>Utilisation :</strong></p>
+				<pre class="language-bash">
+  <button class="btn btn-light copy-btn">Copier</button>
+<code>
+git reflog
+</code>
+  </pre>
+				<p>Pour revenir à un commit précis, par exemple :</p>
+				<pre class="language-bash">
+  <button class="btn btn-light copy-btn">Copier</button>
+<code>
+git reset --hard HEAD@{3}
+</code>
+  </pre>
+
+				<h3>6. Git Reset</h3>
+				<p>
+					<strong>Description :</strong> <code>git reset</code> modifie la position de <code>HEAD</code> et, selon l’option choisie, peut modifier l’index et le répertoire de travail.
+				</p>
+				<ul>
+					<li>
+						<em>Soft (--soft) :</em> Déplace <code>HEAD</code> sans modifier l’index ni le répertoire de travail :
+						<pre class="language-bash">
+  <button class="btn btn-light copy-btn">Copier</button>
+<code>
+git reset --soft &lt;commit_hash&gt;
+</code>
+      </pre>
+					</li>
+					<li>
+						<em>Mixed (par défaut) :</em> Réinitialise l’index sans toucher au répertoire de travail :
+						<pre class="language-bash">
+  <button class="btn btn-light copy-btn">Copier</button>
+<code>
+git reset &lt;commit_hash&gt;
+</code>
+      </pre>
+					</li>
+					<li>
+						<em>Hard (--hard) :</em> Réinitialise <code>HEAD</code>, l’index et le répertoire de travail, supprimant toutes les modifications non committées :
+						<pre class="language-bash">
+  <button class="btn btn-light copy-btn">Copier</button>
+<code>
+git reset --hard &lt;commit_hash&gt;
+</code>
+      </pre>
+					</li>
+				</ul>
+				<p><em>Conseil :</em> Utilisez <code>--hard</code> avec précaution, surtout sur des branches partagées.</p>
+
+				<h3>7. Git Clean</h3>
+				<p>
+					<strong>Description :</strong> <code>git clean</code> supprime les fichiers non suivis dans le répertoire de travail, permettant de nettoyer votre environnement.
+				</p>
+				<ul>
+					<li>
+						Voir ce qui sera supprimé (mode test) :
+						<pre class="language-bash">
+  <button class="btn btn-light copy-btn">Copier</button>
+<code>
+git clean -n
+</code>
+      </pre>
+					</li>
+					<li>
+						Supprimer les fichiers non suivis :
+						<pre class="language-bash">
+  <button class="btn btn-light copy-btn">Copier</button>
+<code>
+git clean -f
+</code>
+      </pre>
+					</li>
+					<li>
+						Supprimer également les répertoires non suivis :
+						<pre class="language-bash">
+  <button class="btn btn-light copy-btn">Copier</button>
+<code>
+git clean -fd
+</code>
+      </pre>
+					</li>
+				</ul>
+				<p><em>Astuce :</em> Utilisez toujours l’option <code>-n</code> pour une simulation avant de supprimer définitivement.</p>
+
+				<h3>8. Git Filter-branch et Git Filter-repo</h3>
+				<p>
+					<strong>Description :</strong> Ces commandes permettent de réécrire l’historique complet du dépôt, ce qui est utile pour supprimer des fichiers sensibles ou nettoyer l’historique.
+				</p>
+				<ul>
+					<li>
+						<em>git filter-branch :</em> Bien que puissant, il peut être lent et complexe pour de gros dépôts.
+						<pre class="language-bash">
+  <button class="btn btn-light copy-btn">Copier</button>
+<code>
+git filter-branch --force --index-filter 'git rm --cached --ignore-unmatch chemin/du/fichier' --prune-empty --tag-name-filter cat -- --all
+</code>
+      </pre>
+					</li>
+					<li>
+						<em>git filter-repo :</em> Une alternative moderne et performante. Exemple pour supprimer un fichier de l’historique :
+						<pre class="language-bash">
+  <button class="btn btn-light copy-btn">Copier</button>
+<code>
+git filter-repo --path chemin/du/fichier --invert-paths
+</code>
+      </pre>
+						<p><em>Astuce :</em> Sauvegardez toujours votre dépôt avant d’effectuer une réécriture historique.</p>
+					</li>
+				</ul>
+
+				<h3>9. Git Submodule</h3>
+				<p>
+					<strong>Description :</strong> La commande <code>git submodule</code> permet d’intégrer et de gérer un dépôt Git externe au sein d’un projet, ce qui est utile pour gérer des dépendances ou bibliothèques de manière autonome.
+				</p>
+				<p><strong>Utilisation typique :</strong></p>
+				<pre class="language-bash">
+  <button class="btn btn-light copy-btn">Copier</button>
+<code>
+git submodule add &lt;URL_du_dépôt&gt; chemin/destination
+git submodule update --init --recursive
+</code>
+  </pre>
+
+				<h3>10. Git Worktree</h3>
+				<p>
+					<strong>Description :</strong> La commande <code>git worktree</code> permet de travailler simultanément sur plusieurs branches dans des répertoires distincts sans avoir à cloner le dépôt plusieurs fois.
+				</p>
+				<p><strong>Utilisation :</strong> Pour créer un nouveau worktree pour une branche :</p>
+				<pre class="language-bash">
+  <button class="btn btn-light copy-btn">Copier</button>
+<code>
+git worktree add ../chemin/vers/nouveau_worktree featureX
+</code>
+  </pre>
+				<p>
+					<em>Avantages :</em> Tester ou développer sur une branche tout en gardant la branche principale intacte. Idéal pour des tests, builds ou débogages sur des versions parallèles.<br />
+					<em>Conseil :</em> Pour revenir à la gestion normale, supprimez le worktree avec :
+				</p>
+				<pre class="language-bash">
+  <button class="btn btn-light copy-btn">Copier</button>
+<code>
+git worktree remove ../chemin/vers/nouveau_worktree
+</code>
+  </pre>
+
+				<h3>Conclusion</h3>
+				<p>
+					Ces commandes avancées offrent une flexibilité considérable pour gérer l’historique, résoudre des problèmes complexes et optimiser votre flux de travail. Leur maîtrise vous permet de :
+				</p>
+				<ul>
+					<li><strong>Gérer des workflows complexes :</strong> Adaptez l’historique avec <code>rebase</code>, <code>cherry-pick</code> et <code>reset</code>.</li>
+					<li><strong>Identifier et corriger des erreurs :</strong> Utilisez <code>bisect</code> et <code>reflog</code> pour retrouver des commits problématiques.</li>
+					<li><strong>Optimiser l’environnement de développement :</strong> Grâce à <code>stash</code>, <code>clean</code>, <code>submodule</code> et <code>worktree</code> pour maintenir un espace de travail organisé.</li>
+				</ul>
+				<p>
+					En pratiquant ces commandes sur des dépôts de test, vous gagnerez en confiance et serez mieux préparé pour gérer des projets complexes.
+				</p>
+			</section>
+
 
 			<!-- TABLEAU COMPLET DES COMMANDES -->
 			<section id="tableau-commands">
