@@ -1,0 +1,267 @@
+/*---------------------- Mode clair / sombre (root variables) ----------------------*/
+:root {
+    --bg-light: #f9f9f9;
+    --text-light: #2c3e50;
+
+    --bg-dark: #212121;
+    --text-dark: #ffffff;
+}
+
+body {
+    background-color: var(--bg-light);
+    color: var(--text-light);
+    transition: background-color 0.3s ease, color 0.3s ease;
+    font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+    min-height: 100vh;
+    overflow-x: hidden;
+    position: relative;
+}
+
+body.dark-mode {
+    background-color: var(--bg-dark);
+    color: var(--text-dark);
+}
+
+/*---------------------- Barre de progression en haut ----------------------*/
+#readingProgress {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 0%;
+    height: 4px;
+    background-color: #ff0000;
+    z-index: 9999;
+    transition: width 0.2s;
+}
+
+body.dark-mode #readingProgress {
+    background-color: #ffc107;
+}
+
+/*---------------------- Menu Table des Matières ----------------------*/
+#navbarTOC {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 220px;
+    height: 100%;
+    overflow-y: auto;
+    background-color: #ffffffcc;
+    backdrop-filter: blur(5px);
+    border-right: 1px solid #ddd;
+    padding: 1rem;
+    z-index: 1000;
+}
+
+#navbarTOC h5 {
+    margin-bottom: 1rem;
+}
+
+#navbarTOC a {
+    display: block;
+    text-decoration: none;
+    margin: 0.25rem 0;
+    color: #2c3e50;
+    transition: color 0.2s;
+}
+
+#navbarTOC a:hover {
+    color: #007bff;
+}
+
+body.dark-mode #navbarTOC {
+    background-color: #333333cc;
+    color: var(--text-dark);
+}
+
+body.dark-mode #navbarTOC a {
+    color: #ffffff;
+}
+
+body.dark-mode #navbarTOC a:hover {
+    color: #ffc107;
+}
+
+.contentWithToc {
+    margin-left: 240px;
+    /* Décalage pour laisser la colonne de TOC */
+}
+
+/*---------------------- HERO / Bannière ----------------------*/
+.hero {
+    background: linear-gradient(135deg, #2c3e50, #34495e);
+    color: #ffffff;
+    padding: 4rem 1rem;
+    text-align: center;
+}
+
+.hero h1 {
+    font-size: 2.5rem;
+    margin-bottom: 1rem;
+}
+
+.hero p {
+    font-size: 1.1rem;
+    color: #dcdcdc;
+}
+
+body.dark-mode .hero {
+    background: linear-gradient(135deg, #555, #666);
+}
+
+/*---------------------- Titres de sections ----------------------*/
+h2,
+h3 {
+    margin-top: 2rem;
+    margin-bottom: 1rem;
+}
+
+/*---------------------- Pre/Code + Copy button ----------------------*/
+pre {
+    border-radius: 5px;
+    margin-top: 0;
+    position: relative;
+    overflow: auto;
+
+    /* plus d'espace, pour éviter la collision */
+}
+
+
+body.dark-mode code[class*="language-"] {
+    color: #eee;
+    /* texte clair */
+    background-color: #333;
+    /* fond plus sombre */
+    color: inherit;
+    /* texte blanc par défaut */
+    line-height: 1.9;
+    white-space: pre-wrap;
+    /* pour éviter les retours à la ligne */
+    word-break: break-all;
+    /* pour éviter les coupures de mots */
+    padding: 0.5rem !important;
+    /* moins de padding */
+}
+
+
+.copy-btn {
+    position: absolute;
+    top: 8px;
+    right: 8px;
+    font-size: 0.8rem;
+    padding: 2px 8px;
+    z-index: 10;
+    border: 1px solid #ddd;
+}
+
+/*---------------------- Footer ----------------------*/
+footer {
+    background-color: #f0f0f0;
+    padding: 1rem 0;
+    text-align: center;
+    margin-top: 2rem;
+    border-top: 1px solid #ddd;
+}
+
+/* Couleurs par défaut (mode clair) */
+.language-bash,
+.language-yaml {
+    background-color: #f3f3f3;
+    padding: 0.5rem;
+    border-radius: 5px;
+    margin-top: 1rem;
+    transition: background-color 0.3s ease;
+}
+
+/* Quand on est en mode dark */
+body.dark-mode .language-bash,
+body.dark-mode .language-yaml {
+    background-color: #333;
+    /* fond plus sombre */
+    color: inherit;
+    /* texte blanc par défaut */
+    line-height: 1.5;
+    /* ou 1.5 */
+}
+
+/* Réduire voire annuler la marge en haut */
+pre.language-bash {
+    margin-top: 0 !important;
+    padding-top: 0.5rem; /* Ou ce que tu préfères */
+}
+
+
+
+/* Footer en mode dark (comme déjà mentionné) */
+body.dark-mode footer {
+    background-color: #444;
+    color: #ffffff;
+}
+
+/*---------------------- Bouton de retour en haut ----------------------*/
+#btnScrollTop {
+    position: fixed;
+    bottom: 20px;
+    right: 20px;
+    z-index: 999;
+    display: none;
+}
+
+/*---------------------- Recherche code (filtrage) ----------------------*/
+#searchBar {
+    margin-bottom: 1rem;
+}
+
+.hiddenBySearch {
+    display: none;
+}
+
+/*--- Menu responsive (petits écrans) ---*/
+@media (max-width: 768px) {
+    #navbarTOC {
+        position: static;
+        width: 100%;
+        height: auto;
+        border-right: none;
+        border-bottom: 1px solid #ddd;
+        margin-bottom: 1rem;
+        background-color: #ffffffcc;
+        padding: 1rem 0.5rem;
+    }
+
+    .contentWithToc {
+        margin-left: 0;
+    }
+
+    /* Sur mobile, on cache le menu par translateX */
+    #menuTopBar {
+        display: flex;
+    }
+
+    #navbarTOC {
+        transform: translateX(-100%);
+        /* Hors écran */
+        width: 100%;
+    }
+
+    #navbarTOC.open {
+        transform: translateX(0);
+    }
+
+    .contentWithToc {
+        margin-left: 0;
+        /* plus de sidebar dans la mise en page */
+    }
+
+    .hamburgerBtn {
+        float: right;
+        display: block;
+        font-size: 1.5rem;
+        margin-right: 1rem;
+    }
+
+    .hero {
+        margin-top: -800px;
+        /* Pour éviter le chevauchement */
+    }
+}
