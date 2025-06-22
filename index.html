@@ -319,15 +319,17 @@
 			</section>
 
 			<!-- (6) MERGE & CONFLITS -->
-			<section id="fusion">
-				<h2 class="card-header text-primary">6. Merge (Fusion) et Conflits</h2>
-				<h3>Fusionner deux branches</h3>
-				<p>
-					On se place sur la branche où on veut intégrer les changements (souvent main ou master), puis on
-					merge :
-				</p>
-				<pre class="language-bash">
-		<button class="btn btn-light copy-btn">Copier</button>
+			<section id="fusion" class="mb-4">
+				<div class="card shadow-sm">
+					<h2 class="card-header text-primary">6. Merge (Fusion) et Conflits</h2>
+					<div class="card-body">
+						<h3>Fusionner deux branches</h3>
+						<p>
+							On se place sur la branche où on veut intégrer les changements (souvent main ou master), puis on
+							merge :
+						</p>
+						<pre class="language-bash">
+						<button class="btn btn-light copy-btn">Copier</button>
 	<code>
 	git checkout main
 	git merge nouvelle-branche</code>
@@ -353,6 +355,8 @@
 				<p>
 					Crée un commit de merge même si on peut faire un fast-forward, pour garder une trace.
 				</p>
+					</div>
+				</div>
 			</section>
 
 			<!-- (7) REBASE -->
