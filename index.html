@@ -336,146 +336,436 @@ git merge --no-ff nouvelle-branche</code>
 			<!-- (7) REBASE -->
 			<section id="rebase">
 				<h2>7. Rebase (Réécriture de l’historique)</h2>
-				<p>
-					La commande <code>git rebase</code> permet de réécrire l'historique du dépôt en appliquant une série de commits sur une nouvelle base. Cela permet d'avoir un historique plus linéaire et propre, de résoudre les conflits de fusion, et de simplifier l'intégration des modifications avec d'autres branches. Cela permet d’obtenir un historique plus <em>linéaire</em> et lisible, en évitant les commits de fusion inutiles. Elle est particulièrement utile pour intégrer les dernières modifications d’une branche (ex. : <code>main</code>) dans votre branche de développement.
-					<br><br><strong>Note :</strong> Le rebase modifie l'historique de votre dépôt, vous devez être sur une branche sans commits non publiés pour utiliser le rebase.'
-				</p>
 
+				<h3>7.1. Qu’est-ce que <code>git rebase</code> ?</h3>
 				<p>
-					<strong>Attention :</strong> N’effectuez pas de rebase sur des branches déjà poussées sur un dépôt partagé, car cela réécrit l’historique et peut perturber le travail de vos collègues. Il est recommandé de tester ces opérations sur des dépôts de test ou des branches locales avant de les utiliser en production.
+					La commande <code>git rebase</code> est l'une des fonctionnalités les plus puissantes de Git, mais aussi l'une de celles qui nécessitent le plus de prudence. Son objectif principal est de **réécrire l'historique des commits** pour le rendre plus linéaire, propre et compréhensible.
 				</p>
-
-				Voici quelques avantages de rebase :<br>
+				<p>
+					Conceptuellement, un rebase prend une série de commits d'une branche et les "rejoue" un par un sur une autre base (un autre commit, souvent la tête d'une autre branche). Cela contraste avec <code>git merge</code>, qui intègre les changements en créant un nouveau commit de fusion qui relie les deux historiques.
+				</p>
+				<h4>Avantages du Rebase :</h4>
 				<ul>
-					<li>Simplifie l'historique : rebase permet de mettre à jour l'historique en appliquant les modifications sur une nouvelle base, ce qui rend l'historique plus facile à comprendre et à analyser.</li>
-					<li>Résout les conflits : rebase permet de résoudre les conflits de fusion en modifiant les fichiers conflictueux et en créant de nouveaux commits.</li>
-					<li>Simplifie l'intégration : rebase permet de simplifier l'intégration des modifications avec d'autres branches en appliquant les modifications sur une nouvelle base, ce qui facilite la résolution des conflits et la fusion des branches.</li>
+					<li><strong>Historique linéaire et propre :</strong> Le principal avantage est un historique de projet sans les "bulles" ou les ramifications créées par les commits de merge. Cela rend le log plus facile à lire et à analyser.</li>
+					<li><strong>Nettoyage des commits locaux :</strong> Avant de partager votre travail (par exemple, via une Pull Request), vous pouvez utiliser le rebase interactif pour réorganiser, fusionner, modifier ou supprimer vos commits locaux, présentant ainsi un ensemble de changements cohérents et bien décrits.</li>
+					<li><strong>Facilite la revue de code :</strong> Des Pull Requests (PRs) avec un historique propre et linéaire sont plus faciles à examiner pour les relecteurs.</li>
 				</ul>
+				<h4>Quand utiliser <code>git rebase</code> ?</h4>
+				<ul>
+					<li>Principalement sur vos **branches de fonctionnalités locales** avant de les fusionner dans une branche principale (comme `main` ou `develop`).</li>
+					<li>Pour **mettre à jour votre branche de fonctionnalité** avec les derniers changements de la branche principale.</li>
+					<li>Pour **nettoyer votre historique local** avant de le pousser vers un dépôt partagé.</li>
+				</ul>
+				<div class="alert alert-warning" role="alert">
+					<strong>Note importante :</strong> Le rebase réécrit l'historique. Cela signifie que les SHA-1 des commits rebasés changent. C'est la raison pour laquelle il faut être très prudent avec les branches qui ont déjà été partagées (voir <a href="#rebase-golden-rule">La Règle d'Or du Rebase</a>).
+				</div>
 
-				<h3>Rebase simple</h3>
+				<h3>7.2. Rebase Simple : Mettre à jour votre branche</h3>
 				<p>
-					Pour mettre à jour votre branche <code>ma-branche</code> avec les derniers commits de <code>main</code>, exécutez :
+					Le cas d'usage le plus courant du rebase est de mettre à jour votre branche de fonctionnalité avec les derniers changements de la branche principale (par exemple, `main`). Cela permet d'intégrer les nouveautés avant de continuer votre travail ou de proposer une fusion.
+				</p>
+				<p>Supposons que vous travaillez sur une branche <code>feature/ma-nouvelle-fonction</code> et que la branche <code>main</code> a reçu de nouveaux commits :</p>
+				<pre class="language-bash">
+	<button class="btn btn-light copy-btn" aria-label="Copier le code pour un rebase simple">Copier</button>
+<code># 1. Assurez-vous que votre branche principale locale (main) est à jour
+git checkout main
+git pull origin main
+
+# 2. Retournez sur votre branche de fonctionnalité
+git checkout feature/ma-nouvelle-fonction
+
+# 3. Rebasez votre branche sur main
+git rebase main</code></pre>
+				<p>
+					Git va alors prendre tous les commits de <code>feature/ma-nouvelle-fonction</code> qui ne sont pas déjà dans <code>main</code>, les mettre de côté temporairement, avancer la tête de <code>feature/ma-nouvelle-fonction</code> pour qu'elle pointe sur le dernier commit de <code>main</code>, puis réappliquer vos commits un par un.
+				</p>
+				<h4>Utilisation de <code>git pull --rebase</code></h4>
+				<p>
+					Lorsque vous travaillez sur une branche locale (qui peut ou non suivre une branche distante) et que vous voulez récupérer les mises à jour de la branche distante correspondante, utiliser <code>git pull --rebase</code> est souvent préférable à un simple <code>git pull</code> (qui effectue un merge par défaut).
 				</p>
 				<pre class="language-bash">
-		<button class="btn btn-light copy-btn">Copier</button>
-<code>
-git checkout ma-branche
-git rebase main
-</code>
-	</pre>
+	<button class="btn btn-light copy-btn" aria-label="Copier la commande git pull --rebase">Copier</button>
+<code># Sur votre branche locale, pour la mettre à jour depuis son équivalent distant
+git pull --rebase origin nom-de-la-branche</code></pre>
 				<p>
-					<strong>Exemple :</strong> Si vous travaillez sur une branche <code>feature</code> et que des modifications ont été apportées sur <code>main</code>, cette commande permet de réappliquer vos commits de <code>feature</code> au-dessus des derniers commits de <code>main</code>.
+					Cela va d'abord récupérer les commits distants (fetch), puis rebaser vos commits locaux (ceux qui ne sont pas encore sur le distant) par-dessus les nouveaux commits récupérés. Cela évite la création d'un commit de merge local non nécessaire et maintient un historique linéaire. C'est une pratique très courante pour les branches de fonctionnalités personnelles.
 				</p>
+				<p>Vous pouvez configurer Git pour que `pull` utilise `--rebase` par défaut pour certaines branches ou globalement :</p>
+				<pre class="language-bash">
+	<button class="btn btn-light copy-btn" aria-label="Copier la configuration pour pull --rebase par défaut">Copier</button>
+<code># Pour la branche courante
+git config pull.rebase true
 
-				<h3>Gestion des conflits lors d'un rebase</h3>
+# Globalement pour toutes les nouvelles branches (attention, impacte tous vos projets)
+# git config --global pull.rebase true</code></pre>
+
+
+				<h3>7.3. Rebase Interactif (<code>git rebase -i</code>) : Peaufiner vos commits</h3>
 				<p>
-					Si des conflits surviennent pendant le rebase, Git interrompt l’opération pour que vous puissiez les résoudre. La procédure est la suivante :
+					Le rebase interactif est un outil extrêmement puissant pour nettoyer et réorganiser votre historique de commits local avant de le partager. Il vous permet de modifier des messages de commit, de fusionner des commits, de les supprimer, de les réordonner, etc.
 				</p>
+				<p>Pour lancer un rebase interactif, vous spécifiez la base sur laquelle vous voulez rebaser. Cela peut être un nom de branche, un SHA de commit, ou une référence comme `HEAD~N` (où N est le nombre de commits à partir de HEAD que vous voulez inclure dans le rebase).</p>
+				<pre class="language-bash">
+	<button class="btn btn-light copy-btn" aria-label="Copier la commande de base pour un rebase interactif">Copier</button>
+<code># Rebaser interactivement les 3 derniers commits
+git rebase -i HEAD~3
+
+# Rebaser interactivement tous les commits depuis la branche 'main' (exclus)
+git rebase -i main</code></pre>
+				<p>
+					Après avoir lancé cette commande, votre éditeur de texte configuré s'ouvrira avec une liste des commits qui sont sur le point d'être rebasés. Chaque ligne représente un commit, commençant par le mot-clé `pick` :
+				</p>
+<pre class="language-text">
+	<button class="btn btn-light copy-btn" aria-label="Copier l'exemple d'écran de rebase interactif">Copier</button>
+<code>pick a1b2c3d Ajout fonctionnalité X (partie 1)
+pick e4f5g6h Commit de travail intermédiaire
+pick i7j8k9l Finalisation fonctionnalité X
+
+# Rebase 1234567..i7j8k9l onto 1234567 (3 commands)
+#
+# Commands:
+# p, pick <commit> = use commit
+# r, reword <commit> = use commit, but edit the commit message
+# e, edit <commit> = use commit, but stop for amending
+# s, squash <commit> = use commit, but meld into previous commit
+# f, fixup <commit> = like "squash", but discard this commit's log message
+# x, exec <command> = run command (the rest of the line) using shell
+# b, break = stop here (continue rebase later with 'git rebase --continue')
+# d, drop <commit> = remove commit
+# l, label <label> = label current HEAD with a name
+# t, reset <label> = reset HEAD to a label
+# m, merge [-C <commit> | -c <commit>] <label> [# <oneline>]
+# .       create a merge commit using the original merge commit's
+# .       message (or the oneline, if no original merge commit was
+# .       specified). Use -c <commit> to re-create the merge commit
+# .       using the same log message as <commit>.
+#
+# These lines can be re-ordered; they are executed from top to bottom.
+#
+# If you remove a line here THAT COMMIT WILL BE LOST.
+#
+# However, if you remove everything, the rebase will be aborted.
+#</code></pre>
+				<p>En bas de cette liste, vous trouverez des instructions sur les commandes (actions) que vous pouvez utiliser. Voici les plus courantes :</p>
 				<ul>
+					<li><strong><code>pick</code> (ou <code>p</code>) : Utiliser le commit.</strong>
+						<p>C'est l'action par défaut. Le commit sera inclus dans l'historique rebasé tel quel.</p>
+					</li>
+					<li><strong><code>reword</code> (ou <code>r</code>) : Modifier le message du commit.</strong>
+						<p>Si vous marquez un commit avec <code>reword</code>, Git s'arrêtera après avoir appliqué ce commit et vous invitera à modifier son message. Très utile pour corriger des typos ou clarifier un message de commit.</p>
+						<p><em>Exemple :</em> Changez <code>pick</code> en <code>reword</code> sur la ligne du commit souhaité. Sauvegardez et fermez. Git ouvrira l'éditeur pour ce message de commit.</p>
+					</li>
+					<li><strong><code>edit</code> (ou <code>e</code>) : Modifier le contenu du commit.</strong>
+						<p>Utilisez <code>edit</code> si vous voulez amender les changements introduits par ce commit (ajouter des fichiers, modifier du code) ou même scinder le commit en plusieurs plus petits.</p>
+						<p>Lorsque Git rencontre un commit marqué <code>edit</code>, le processus de rebase s'interrompt. Vous pouvez alors faire vos modifications (ex: <code>git add ...</code>, <code>git commit --amend</code>), puis continuer le rebase avec <code>git rebase --continue</code>.</p>
+					</li>
+					<li><strong><code>squash</code> (ou <code>s</code>) : Fusionner le commit avec le commit précédent.</strong>
+						<p>Le commit marqué <code>squash</code> est fusionné dans le commit qui le précède. Git ouvrira ensuite un éditeur pour vous permettre de combiner les messages des commits (ou d'en écrire un nouveau).</p>
+						<p>Parfait pour combiner plusieurs petits commits ("WIP", "typo") en un seul commit de fonctionnalité cohérent.</p>
+						<p><em>Exemple :</em></p>
+<pre class="language-text">
+	<button class="btn btn-light copy-btn" aria-label="Copier l'exemple de squash">Copier</button>
+<code>pick a1b2c3d Ajout de la fonctionnalité X (partie 1)
+s e4f5g6h Correction typo sur X
+s i7j8k9l Ajustements mineurs sur X</code></pre>
+						<p>Ces trois commits deviendront un seul. Git vous demandera de fournir le message final.</p>
+					</li>
+					<li><strong><code>fixup</code> (ou <code>f</code>) : Fusionner avec le précédent, ignorer le message.</strong>
+						<p>Similaire à <code>squash</code>, mais <code>fixup</code> jette le message du commit "fixup" et utilise uniquement le message du commit précédent. Le message du commit "fixé" n'est même pas présenté pour édition.</p>
+						<p>Très pratique pour des petites corrections rapides où le message du commit original est suffisant.</p>
+						<p><em>Exemple :</em></p>
+<pre class="language-text">
+	<button class="btn btn-light copy-btn" aria-label="Copier l'exemple de fixup">Copier</button>
+<code>pick a1b2c3d Ajout fonctionnalité Y
+f b2c3d4e Oups, oubli d'un fichier pour Y</code></pre>
+						<p>Le deuxième commit sera intégré au premier, et seul le message "Ajout fonctionnalité Y" sera conservé.</p>
+					</li>
+					<li><strong><code>drop</code> (ou <code>d</code>) : Supprimer complètement le commit.</strong>
+						<p>Si un commit n'est plus nécessaire, vous pouvez le supprimer avec <code>drop</code> (ou en supprimant simplement sa ligne). Le commit et ses changements disparaîtront de l'historique. À utiliser avec précaution.</p>
+					</li>
+					<li><strong>Réordonner les commits :</strong>
+						<p>Vous pouvez simplement changer l'ordre des lignes dans le fichier de rebase interactif pour changer l'ordre dans lequel les commits sont appliqués.</p>
+					</li>
+				</ul>
+				<div class="alert alert-info" role="alert">
+					<strong>Conseils pour le rebase interactif :</strong>
+					<ul>
+						<li>Ne modifiez que les actions (<code>pick</code>, <code>squash</code>, etc.) ou l'ordre des lignes. Ne supprimez pas les SHA des commits.</li>
+						<li>Si vous faites une erreur en éditant le fichier d'instructions, vous pouvez généralement fermer l'éditeur sans sauvegarder, et Git annulera le rebase (ou utilisez <code>git rebase --abort</code>).</li>
+						<li>Après avoir sauvegardé et fermé le fichier, Git appliquera les actions. Soyez prêt à <a href="#rebase-conflict-resolution">résoudre des conflits</a>.</li>
+					</ul>
+				</div>
+
+				<h3 id="rebase-conflict-resolution">7.4. Gestion des Conflits pendant un Rebase</h3>
+				<p>
+					Des conflits peuvent survenir pendant un rebase si les changements que vous essayez de réappliquer entrent en conflit avec des changements sur la branche de base, ou même avec des changements de vos propres commits précédents qui ont été modifiés (par exemple, si vous réordonnez des commits qui touchent aux mêmes lignes).
+				</p>
+				<p>Lorsque Git rencontre un conflit, le processus de rebase s'interrompt et vous informe du fichier (ou des fichiers) en conflit. La procédure de résolution est la suivante :</p>
+				<ol>
 					<li>
-						<strong>Identifier et résoudre le conflit :</strong> Ouvrez le(s) fichier(s) concerné(s) et modifiez les sections marquées par <code>&lt;&lt;&lt;&lt;&lt;&lt;</code>, <code>=======</code> et <code>&gt;&gt;&gt;&gt;&gt;&gt;</code> pour choisir le contenu approprié.
+						<strong>Identifier et résoudre le conflit :</strong> Ouvrez le(s) fichier(s) concerné(s). Git y aura inséré les marqueurs de conflit habituels (<code>&lt;&lt;&lt;&lt;&lt;&lt;&lt;</code>, <code>=======</code>, <code>&gt;&gt;&gt;&gt;&gt;&gt;&gt;</code>). Modifiez le fichier pour obtenir le résultat souhaité, puis supprimez les marqueurs.
 					</li>
 					<li>
-						<strong>Ajouter le fichier résolu :</strong>
+						<strong>Ajouter le fichier résolu au staging :</strong>
 						<pre class="language-bash">
-		<button class="btn btn-light copy-btn">Copier</button>
-<code>
-git add fichier_conflit.txt
-</code>
-			</pre>
+	<button class="btn btn-light copy-btn" aria-label="Copier la commande git add après résolution de conflit de rebase">Copier</button>
+<code>git add &lt;fichier_resolu_1&gt; [fichier_resolu_2...]</code></pre>
 					</li>
 					<li>
 						<strong>Poursuivre le rebase :</strong>
 						<pre class="language-bash">
-		<button class="btn btn-light copy-btn">Copier</button>
-<code>
-git rebase --continue
-</code>
-			</pre>
+	<button class="btn btn-light copy-btn" aria-label="Copier la commande git rebase --continue">Copier</button>
+<code>git rebase --continue</code></pre>
+						<p>Git tentera alors d'appliquer le reste des commits.</p>
 					</li>
-					<li>
-						<strong>Annuler le rebase :</strong> Si nécessaire, vous pouvez abandonner le rebase en cours avec :
-						<pre class="language-bash">
-		<button class="btn btn-light copy-btn">Copier</button>
-<code>
-git rebase --abort
-</code>
-			</pre>
-					</li>
-				</ul>
-
-				<h3>Rebase interactif</h3>
-				<p>
-					Le rebase interactif vous permet de modifier l’ordre des commits, de fusionner plusieurs commits (squash), de modifier leurs messages ou même de supprimer des commits. C’est une technique puissante pour nettoyer l’historique avant de fusionner une branche.
-				</p>
-				<pre class="language-bash">
-		<button class="btn btn-light copy-btn">Copier</button>
-<code>
-git rebase -i HEAD~3
-</code>
-	</pre>
-				<p>
-					Lancez cette commande depuis votre branche de développement. Un éditeur s’ouvrira avec une liste des 3 derniers commits, par exemple :
-				</p>
-				<pre class="language-text">
-		<button class="btn btn-light copy-btn">Copier</button>
-<code>
-pick abc1234 Premier commit de la feature
-squash def5678 Second commit à fusionner avec le premier
-pick ghi9012 Troisième commit
-</code>
-	</pre>
-				<p>
-					Modifiez les mots-clés selon vos besoins (<code>pick</code>, <code>squash</code>, <code>reword</code>, etc.), sauvegardez et fermez l’éditeur. Git fusionnera alors les commits indiqués et vous demandera de confirmer ou modifier le message final.
-				</p>
-
-				<h3>Options avancées</h3>
+				</ol>
+				<h4>Options en cas de problème majeur lors d'un conflit :</h4>
 				<ul>
 					<li>
-						<strong>Utilisation de <code>--onto</code> :</strong>
-						<p>
-							Permet de repositionner une série de commits sur une nouvelle base, différente du parent direct. Par exemple, pour déplacer tous les commits de <code>feature</code> qui ne sont pas dans <code>base</code> sur <code>nouvelle-base</code> :
-						</p>
+						<strong>Annuler complètement le rebase :</strong> Si la résolution des conflits devient trop complexe ou si vous n'êtes pas sûr de ce que vous faites, vous pouvez toujours revenir à l'état d'avant le rebase :
 						<pre class="language-bash">
-		<button class="btn btn-light copy-btn">Copier</button>
-<code>
-git checkout feature
-git rebase --onto nouvelle-base base feature
-</code>
-			</pre>
+	<button class="btn btn-light copy-btn" aria-label="Copier la commande git rebase --abort">Copier</button>
+<code>git rebase --abort</code></pre>
 					</li>
 					<li>
-						<strong>Résolution automatique avec <code>-Xours</code> ou <code>-Xtheirs</code> :</strong>
-						<p>
-							Ces options permettent de résoudre automatiquement les conflits en privilégiant votre version (<code>ours</code>) ou celle de la branche sur laquelle vous rebasez (<code>theirs</code>).
-							<em>Exemple :</em>
-						</p>
+						<strong>Sauter un commit (avec prudence) :</strong> Si un commit particulier cause des problèmes insolubles et que vous décidez qu'il n'est pas essentiel (ou que vous le réintroduirez différemment plus tard), vous pouvez dire à Git de l'ignorer et de continuer :
 						<pre class="language-bash">
-		<button class="btn btn-light copy-btn">Copier</button>
-<code>
-git rebase -Xtheirs main
-</code>
-			</pre>
+	<button class="btn btn-light copy-btn" aria-label="Copier la commande git rebase --skip">Copier</button>
+<code>git rebase --skip</code></pre>
+						<p><strong>Attention :</strong> Utiliser <code>--skip</code> signifie que les changements de ce commit seront perdus. Utilisez cette option avec une extrême prudence.</p>
 					</li>
-					<li>
-						<strong>Conservation des commits de fusion :</strong>
-						<p>
-							Par défaut, le rebase "aplati" l’historique en supprimant les commits de fusion. Pour conserver la topologie des fusions, utilisez l’option <code>--rebase-merges</code> :
-						</p>
-						<pre class="language-bash">
-		<button class="btn btn-light copy-btn">Copier</button>
-<code>
-git rebase --rebase-merges main
-</code>
-			</pre>
+				</ul>
+				<h4>Stratégies de résolution automatique (<code>-Xours</code> ou <code>-Xtheirs</code>)</h4>
+				<p>
+					Lors d'un rebase (ou d'un merge), vous pouvez indiquer à Git une stratégie pour résoudre automatiquement les conflits en privilégiant "votre" version (<code>ours</code>, c'est-à-dire les changements de la branche que vous rebasez) ou "leur" version (<code>theirs</code>, c'est-à-dire les changements de la branche sur laquelle vous rebasez).
+				</p>
+				<pre class="language-bash">
+	<button class="btn btn-light copy-btn" aria-label="Copier la commande de rebase avec stratégie de résolution">Copier</button>
+<code># Pendant un rebase, si des conflits surviennent sur un commit,
+# et que vous voulez automatiquement accepter les changements de la branche de base (main) :
+git checkout --theirs chemin/vers/le/fichier_en_conflit.txt
+git add chemin/vers/le/fichier_en_conflit.txt
+# Puis git rebase --continue
+
+# Ou pour privilégier systématiquement "theirs" lors d'un rebase (risqué si non compris) :
+# git rebase -Xtheirs main
+# (Cette option est passée à la commande rebase initiale, pas pendant la résolution)</code></pre>
+				<p>Ces options sont puissantes mais peuvent masquer des problèmes si elles sont utilisées sans discernement. Il est souvent préférable de résoudre les conflits manuellement pour s'assurer de l'intégrité du code.</p>
+
+
+				<h3>7.5. Rebase Avancé avec <code>--onto</code></h3>
+				<p>
+					L'option <code>--onto</code> est l'une des formes les plus flexibles du rebase. Elle vous permet de spécifier explicitement où les commits doivent être déplacés, indépendamment de la position actuelle de HEAD ou de la branche de base implicite.
+				</p>
+				<p>La syntaxe générale est :</p>
+				<code>git rebase --onto &lt;nouvelle_base&gt; &lt;ancienne_base_exclusive&gt; [&lt;branche_ou_commit_a_rebaser_inclusif&gt;]</code>
+				<ul>
+					<li><code>&lt;nouvelle_base&gt;</code> : Le commit sur lequel les nouveaux commits seront basés.</li>
+					<li><code>&lt;ancienne_base_exclusive&gt;</code> : Le commit "jusqu'auquel" (mais non inclus) les commits de la branche d'origine sont ignorés. Les commits qui viennent *après* celui-ci seront ceux rebasés.</li>
+					<li><code>&lt;branche_ou_commit_a_rebaser_inclusif&gt;</code> : (Optionnel) Le commit ou la branche jusqu'où (inclus) les commits doivent être pris. Si omis, Git utilise HEAD (le commit actuel de la branche sur laquelle vous êtes).</li>
+				</ul>
+				<h4>Cas d'usage de <code>--onto</code> :</h4>
+				<p><strong>1. Déplacer une série de commits d'une branche à une autre (transplantation) :</strong></p>
+				<p>Imaginez la situation suivante :</p>
+				<pre>A - B - C - D (main)
+     \
+      E - F - G (featureA)
+           \
+            H - I (featureB, basée sur F de featureA)</pre>
+				<p>Vous réalisez que <code>featureB</code> (commits H et I) devrait en fait être basée directement sur <code>main</code> (commit D) plutôt que sur <code>featureA</code>. Vous voulez déplacer H et I.</p>
+				<pre class="language-bash">
+	<button class="btn btn-light copy-btn" aria-label="Copier l'exemple de git rebase --onto pour transplanter">Copier</button>
+<code># Sur la branche featureB (ou en spécifiant featureB à la fin)
+git rebase --onto main featureA featureB
+# Ou plus précisément, si featureA est sur F et featureB sur I:
+# git rebase --onto D F I
+# (en utilisant les SHA des commits ou noms de branches/tags)
+</code></pre>
+				<p>Cela signifie : "Prends les commits de `featureB` qui viennent après `featureA` (donc H et I), et rejoue-les sur `main`."</p>
+				<p>L'historique deviendrait :</p>
+				<pre>A - B - C - D (main)
+     \           \
+      \           H' - I' (featureB)
+       \
+        E - F - G (featureA)</pre>
+
+				<p><strong>2. Réorganiser une branche en excluant des commits du milieu :</strong></p>
+				<p>Si votre branche <code>feature</code> a des commits <code>X-Y-Z</code> et vous voulez la rebaser sur `main` mais seulement avec `X` et `Z`, en omettant `Y` :</p>
+				<pre class="language-bash">
+	<button class="btn btn-light copy-btn" aria-label="Copier l'exemple de git rebase --onto pour exclure">Copier</button>
+<code># Supposons que feature est sur Z.
+# Pour rebaser X sur main, puis Z sur ce nouveau X' :
+# D'abord, rebaser X sur main:
+git rebase --onto main Y X  # (Rebase le commit X, qui est après Y (exclu), sur main)
+# Cela crée X'. HEAD est maintenant sur X'.
+# Ensuite, rebaser Z sur X':
+git rebase --onto HEAD X Z # (Rebase le commit Z, qui est après X (exclu), sur HEAD (X'))
+</code></pre>
+				<p>Cependant, pour ce type d'opération (supprimer un commit du milieu), un <a href="#rebase-interactive">rebase interactif</a> avec l'action <code>drop</code> sur le commit Y est généralement plus simple.</p>
+				<p><code>--onto</code> est particulièrement utile lorsque vous avez besoin de "greffer" une séquence de commits d'un endroit à un autre de manière très ciblée, souvent en conjonction avec des SHA de commits spécifiques.</p>
+
+
+				<h3 id="rebase-golden-rule">7.6. La Règle d'Or du Rebase : Les Dangers et Précautions</h3>
+				<p>
+					La flexibilité du rebase vient avec une responsabilité majeure, encapsulée dans ce qu'on appelle souvent la **"Règle d'Or du Rebase"** :
+				</p>
+				<div class="alert alert-danger" role="alert">
+					<strong>Ne JAMAIS rebaser des commits qui ont déjà été poussés sur un dépôt partagé et sur lesquels d'autres personnes pourraient avoir basé leur travail.</strong>
+				</div>
+				<h4>Pourquoi cette règle est-elle si cruciale ?</h4>
+				<p>
+					Lorsque vous rebasez, vous réécrivez l'historique. Même si les changements de code (le "patch") sont les mêmes, les commits rebasés sont de nouveaux commits avec de nouveaux SHA-1.
+				</p>
+				<p>Si vous rebasez une branche que d'autres ont déjà clonée ou pullée :</p>
+				<ul>
+					<li>Leur historique local devient **divergent** par rapport au nouvel historique que vous venez de créer.</li>
+					<li>S'ils essaient de puller vos changements rebasés, Git verra deux historiques différents et tentera de les fusionner, créant des doublons de commits et un historique très confus.</li>
+					<li>Pour "corriger" cela de votre côté après avoir rebasé une branche poussée, vous seriez obligé d'utiliser <code>git push --force</code> (ou <code>--force-with-lease</code>). Cela écrase l'historique sur le dépôt distant avec votre version réécrite.</li>
+					<li>Si vos collaborateurs ont basé leur propre travail sur l'ancien historique (avant votre rebase forcé), ils devront alors eux-mêmes effectuer des opérations complexes (souvent un autre rebase de leur travail sur votre nouvel historique) pour resynchroniser, ce qui est source d'erreurs et de frustration.</li>
+				</ul>
+				<h4>Quand le rebase est-il sûr et recommandé ?</h4>
+				<ul>
+					<li><strong>Sur vos commits locaux, non encore poussés :</strong> C'est le cas d'usage principal. Nettoyez votre historique autant que vous le souhaitez avant de le partager.</li>
+					<li><strong>Sur une branche de fonctionnalité que vous êtes le seul à utiliser :</strong> Même si elle est poussée sur le distant (par exemple, pour une sauvegarde ou pour une PR pas encore mergée), si personne d'autre ne l'utilise comme base, vous *pouvez* la rebaser (mais vous devrez forcer le push).</li>
+					<li><strong>Après communication et accord explicite avec votre équipe :</strong> Dans certains workflows d'équipe, il peut être acceptable de rebaser des branches partagées sous conditions strictes et avec une bonne coordination.</li>
+				</ul>
+				<h4>Que faire si vous avez rebasé une branche poussée par erreur ?</h4>
+				<p>Si vous avez poussé la branche avant le rebase, puis l'avez rebasée et voulez maintenant la pousser à nouveau :</p>
+				<ul>
+					<li><strong><code>git push --force-with-lease origin nom-de-la-branche</code></strong> : C'est une alternative plus sûre à <code>git push --force</code>. Elle ne forcera la mise à jour que si la branche distante est dans l'état où vous pensez qu'elle est (c'est-à-dire, personne d'autre n'a poussé de nouveaux commits entre-temps). Si quelqu'un d'autre a poussé, le push sera rejeté, vous alertant d'un potentiel problème.</li>
+					<li><strong><code>git push --force origin nom-de-la-branche</code></strong> : À utiliser en dernier recours et seulement si vous êtes absolument sûr que personne d'autre n'a pullé l'ancienne version de la branche ou si vous avez coordonné avec eux.</li>
+				</ul>
+				<p>En résumé, traitez l'historique des branches publiques (comme `main`, `develop`) et des branches de fonctionnalités partagées comme immuable une fois poussé. Réservez le rebase pour votre travail local ou pour des branches dont vous avez le contrôle total.</p>
+
+
+				<h3>7.7. Se Rétablir d'un Rebase Problématique : <code>git reflog</code> à la Rescousse</h3>
+				<p>
+					Parfois, un rebase peut mal tourner : vous supprimez accidentellement un commit important, la résolution de conflits introduit des erreurs, ou l'historique devient confus. Heureusement, Git conserve un journal de toutes les positions de HEAD, appelé le **reflog**. C'est votre filet de sécurité.
+				</p>
+				<p>Pour voir le reflog :</p>
+				<pre class="language-bash">
+	<button class="btn btn-light copy-btn" aria-label="Copier la commande git reflog">Copier</button>
+<code>git reflog</code></pre>
+				<p>Cela affichera une liste de toutes les opérations qui ont modifié HEAD, y compris les commits, les merges, les resets, et les rebases. Chaque entrée a un identifiant (par exemple, <code>HEAD@{2}</code>) et un SHA de commit.</p>
+				<p><strong>Exemple de récupération :</strong></p>
+				<p>Supposons que vous venez de terminer un rebase interactif, mais vous réalisez que vous avez fait une erreur. Vous lancez <code>git reflog</code> :</p>
+<pre class="language-text">
+	<button class="btn btn-light copy-btn" aria-label="Copier l'exemple de sortie de git reflog">Copier</button>
+<code>a1b2c3d HEAD@{0}: rebase -i (finish): returning to refs/heads/ma-branche
+a1b2c3d HEAD@{1}: rebase -i (squash): Mon commit squashe
+e4f5g6h HEAD@{2}: rebase -i (reword): Ancien message avant reword
+i7j8k9l HEAD@{3}: rebase -i (start): checkout main
+b0c1d2e HEAD@{4}: commit: Mon travail avant le rebase catastrophique
+...</code></pre>
+				<p>
+					Vous pouvez voir l'état avant le début du rebase (par exemple, à <code>HEAD@{4}</code> avec le commit <code>b0c1d2e</code>). Pour revenir à cet état :
+				</p>
+				<pre class="language-bash">
+	<button class="btn btn-light copy-btn" aria-label="Copier la commande git reset --hard pour récupérer via reflog">Copier</button>
+<code>git reset --hard HEAD@{4}
+# Ou, de manière plus sûre, si vous voulez juste inspecter d'abord :
+# git checkout HEAD@{4}
+# (cela vous met en mode HEAD détachée, puis vous pouvez créer une nouvelle branche si besoin)</code></pre>
+				<p>
+					<code>git reset --hard</code> ramènera votre branche et votre répertoire de travail exactement à l'état où ils étaient au commit <code>b0c1d2e</code>. Le reflog est une bouée de sauvetage, mais il est spécifique à votre dépôt local et n'est pas partagé.
+				</p>
+
+
+				<h3>7.8. Rebase vs. Merge : Quelle Stratégie Choisir ?</h3>
+				<p>
+					Le débat "rebase ou merge ?" est l'un des plus courants dans le monde de Git. Les deux stratégies ont pour but d'intégrer des changements d'une branche à une autre, mais elles le font de manières différentes, avec des implications distinctes pour l'historique de votre projet.
+				</p>
+				<h4><code>git rebase</code></h4>
+				<ul>
+					<li><strong>Avantages :</strong>
+						<ul>
+							<li>Crée un historique linéaire, propre et facile à suivre.</li>
+							<li>Évite les commits de merge "inutiles" qui peuvent polluer le log.</li>
+							<li>Permet de nettoyer et d'organiser les commits d'une branche de fonctionnalité avant l'intégration.</li>
+						</ul>
+					</li>
+					<li><strong>Inconvénients :</strong>
+						<ul>
+							<li>Réécrit l'historique (les SHA des commits changent). Dangereux si utilisé sur des branches partagées (voir <a href="#rebase-golden-rule">Règle d'Or</a>).</li>
+							<li>Peut rendre plus difficile la compréhension du moment exact où une branche de fonctionnalité a été intégrée, car le contexte du merge est perdu.</li>
+							<li>Les conflits doivent être résolus commit par commit, ce qui peut être fastidieux si la branche rebasée est longue et diverge beaucoup.</li>
+						</ul>
 					</li>
 				</ul>
 
-				<p>
-					<strong>Attention :</strong> N’effectuez pas de rebase sur des branches déjà poussées sur un dépôt partagé, car cela réécrit l’historique et peut perturber le travail de vos collègues. Il est recommandé de tester ces opérations sur des dépôts de test ou des branches locales avant de les utiliser en production.
-				</p>
-			</section>
+				<h4><code>git merge</code> (typiquement avec <code>--no-ff</code> pour préserver un commit de merge)</h4>
+				<pre class="language-bash">
+	<button class="btn btn-light copy-btn" aria-label="Copier la commande git merge --no-ff">Copier</button>
+<code>git checkout main
+git merge --no-ff ma-branche-feature</code></pre>
+				<ul>
+					<li><strong>Avantages :</strong>
+						<ul>
+							<li>Préserve l'historique exact tel qu'il s'est produit. Chaque intégration de branche est clairement marquée par un commit de merge.</li>
+							<li>Est non destructif pour l'historique existant. Les SHA des commits originaux sont conservés.</li>
+							<li>Plus simple à comprendre et à utiliser, surtout pour les débutants.</li>
+							<li>Les conflits sont résolus une seule fois, au moment du merge.</li>
+						</ul>
+					</li>
+					<li><strong>Inconvénients :</strong>
+						<ul>
+							<li>Peut rendre l'historique du projet "bruyant" et difficile à lire avec de nombreux commits de merge, surtout sur des projets avec beaucoup de branches et de contributeurs. Le graphe du log peut devenir complexe.</li>
+							<li>Sans discipline (par exemple, squasher les commits d'une PR avant de la merger), l'historique principal peut se remplir de petits commits intermédiaires.</li>
+						</ul>
+					</li>
+				</ul>
 
+				<h4>Recommandations Générales et Approches Courantes :</h4>
+				<ol>
+					<li>
+						<strong>Pour le travail local / branches de fonctionnalités personnelles :</strong>
+						<ul>
+							<li>Utilisez <code>git rebase</code> (et <code>git rebase -i</code>) fréquemment pour garder votre branche à jour avec la branche principale et pour nettoyer votre propre historique de commits avant de le partager.</li>
+							<li>Utilisez <code>git pull --rebase</code> pour mettre à jour vos branches locales depuis le distant.</li>
+						</ul>
+					</li>
+					<li>
+						<strong>Pour l'intégration dans les branches principales (<code>main</code>, <code>develop</code>) :</strong>
+						<ul>
+							<li>**Option 1 (Workflow privilégiant le rebase) :** Avant de fusionner une branche de fonctionnalité dans `main`, rebasez-la interactivement pour nettoyer les commits, puis rebasez-la sur la dernière version de `main`. Ensuite, effectuez un fast-forward merge sur `main` (ou un merge simple qui sera fast-forward si possible). Cela maintient `main` complètement linéaire. C'est souvent fait via des Pull/Merge Requests où on demande au contributeur de rebaser sa branche.</li>
+							<li>**Option 2 (Workflow privilégiant le merge) :** Fusionnez les branches de fonctionnalités dans `main` en utilisant explicitement <code>git merge --no-ff</code>. Cela crée un commit de merge qui documente l'intégration de la fonctionnalité. L'historique de la branche de fonctionnalité reste intact. C'est la stratégie par défaut de plateformes comme GitHub lors du clic sur "Merge pull request".</li>
+							<li>**Option 3 (Workflow "Squash and Merge") :** Lors de l'intégration d'une Pull Request, tous les commits de la branche de fonctionnalité sont "squashés" en un seul commit sur la branche principale. Cela garde l'historique principal très propre (un commit par fonctionnalité/PR) mais perd la granularité de l'historique de la branche de fonctionnalité.</li>
+						</ul>
+					</li>
+					<li>
+						<strong>Cohérence d'équipe :</strong> Le plus important est que l'équipe se mette d'accord sur un workflow et s'y tienne. Les deux approches (rebase ou merge pour l'intégration) sont valides et ont leurs adeptes.
+					</li>
+				</ol>
+
+
+				<h3>7.9. Options de Rebase Spécifiques</h3>
+				<p>Outre les options déjà vues, quelques autres peuvent être utiles dans des cas spécifiques :</p>
+				<ul>
+					<li>
+						<strong><code>--rebase-merges</code> (ou <code>-r</code>) :</strong>
+						<p>
+							Cette option, disponible dans les versions plus récentes de Git, permet de rebaser une branche qui contient elle-même des commits de merge. Contrairement au rebase standard qui "aplatit" l'historique en ne rejouant que les commits non-merge, <code>--rebase-merges</code> tente de recréer la structure de merge de votre branche par-dessus la nouvelle base. C'est utile si vous avez une branche de fonctionnalité complexe avec des merges intentionnels que vous souhaitez préserver.
+						</p>
+						<pre class="language-bash">
+	<button class="btn btn-light copy-btn" aria-label="Copier la commande git rebase --rebase-merges">Copier</button>
+<code>git rebase -r main
+# ou
+git rebase --rebase-merges main</code></pre>
+						<p>C'est une alternative plus moderne et souvent plus robuste à l'ancienne option <code>--preserve-merges</code> (maintenant dépréciée).</p>
+					</li>
+					<li>
+						<strong><code>--autostash</code> :</strong>
+						<p>Si vous avez des modifications non commitées dans votre répertoire de travail lorsque vous lancez un rebase, Git refusera de démarrer. L'option <code>--autostash</code> va automatiquement créer un stash temporaire de vos modifications, effectuer le rebase, puis réappliquer le stash.</p>
+						<pre class="language-bash">
+	<button class="btn btn-light copy-btn" aria-label="Copier la commande git rebase --autostash">Copier</button>
+<code>git rebase main --autostash</code></pre>
+					</li>
+				</ul>
+				<p>
+					La maîtrise de <code>git rebase</code> demande de la pratique et une bonne compréhension de ses implications. Commencez par l'utiliser sur des branches locales et des dépôts de test pour vous familiariser avec son comportement avant de l'appliquer dans des contextes collaboratifs plus complexes.
+				</p>
+
+			</section>
 
 			<!-- (8) COMPARAISON & ANALYSE -->
 			<section id="comparaison">
@@ -642,39 +932,11 @@ git shortlog               # Liste des commits regroupés par auteur
 
 				<h3>1. Git Rebase</h3>
 				<p>
-					<strong>Description :</strong> La commande <code>git rebase</code> permet de déplacer ou réappliquer une série de commits sur une nouvelle base, offrant ainsi un historique plus linéaire et propre.
+					<strong>Description :</strong> La commande <code>git rebase</code> est un outil puissant pour réécrire l'historique des commits, permettant de créer un historique plus linéaire et propre. Elle déplace ou réapplique une série de commits sur une nouvelle base.
 				</p>
-				<p><strong>Utilisations avancées :</strong></p>
-				<ul>
-					<li>
-						<em>Rebase simple :</em> Pour mettre à jour une branche de fonctionnalité avec les dernières modifications de la branche principale :
-						<pre class="language-bash">
-  <button class="btn btn-light copy-btn">Copier</button>
-<code>
-git checkout featureA
-git rebase main
-</code>
-      </pre>
-					</li>
-					<li>
-						<em>Rebase interactif :</em> Permet de modifier l’ordre des commits, de fusionner (squash), de réordonner ou supprimer certains commits. Par exemple :
-						<pre class="language-bash">
-  <button class="btn btn-light copy-btn">Copier</button>
-<code>
-git rebase -i HEAD~3
-</code>
-      </pre>
-						Dans l’éditeur, vous pourriez voir :
-						<pre class="language-text">
-  <button class="btn btn-light copy-btn">Copier</button>
-<code>
-pick abc1234 Premier commit de la feature
-squash def5678 Deuxième commit à fusionner avec le premier
-pick ghi9012 Troisième commit
-</code>
-      </pre>
-					</li>
-				</ul>
+				<p>
+					Pour une explication détaillée, des exemples concrets, les cas d'usage (rebase simple, interactif, <code>--onto</code>), la gestion des conflits, les dangers à éviter (la "Règle d'Or"), et la comparaison avec <code>git merge</code>, veuillez vous référer à la <a href="#rebase">Section 7 : Rebase (Réécriture de l’historique)</a>.
+				</p>
 
 				<h3>2. Git Cherry-pick</h3>
 				<p>
