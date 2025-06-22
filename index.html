@@ -360,30 +360,32 @@
 			</section>
 
 			<!-- (7) REBASE -->
-			<section id="rebase">
-				<h2 class="card-header text-primary">7. Rebase (Réécriture de l’historique)</h2>
-				<p>
-					La commande <code>git rebase</code> permet de réécrire l'historique du dépôt en appliquant une série de commits sur une nouvelle base. Cela permet d'avoir un historique plus linéaire et propre, de résoudre les conflits de fusion, et de simplifier l'intégration des modifications avec d'autres branches. Cela permet d’obtenir un historique plus <em>linéaire</em> et lisible, en évitant les commits de fusion inutiles. Elle est particulièrement utile pour intégrer les dernières modifications d’une branche (ex. : <code>main</code>) dans votre branche de développement.
-					<br><br><strong>Note :</strong> Le rebase modifie l'historique de votre dépôt, vous devez être sur une branche sans commits non publiés pour utiliser le rebase.'
-				</p>
+			<section id="rebase" class="mb-4">
+				<div class="card shadow-sm">
+					<h2 class="card-header text-primary">7. Rebase (Réécriture de l’historique)</h2>
+					<div class="card-header">
+						<p>
+							La commande <code>git rebase</code> permet de réécrire l'historique du dépôt en appliquant une série de commits sur une nouvelle base. Cela permet d'avoir un historique plus linéaire et propre, de résoudre les conflits de fusion, et de simplifier l'intégration des modifications avec d'autres branches. Cela permet d’obtenir un historique plus <em>linéaire</em> et lisible, en évitant les commits de fusion inutiles. Elle est particulièrement utile pour intégrer les dernières modifications d’une branche (ex. : <code>main</code>) dans votre branche de développement.
+							<br><br><strong>Note :</strong> Le rebase modifie l'historique de votre dépôt, vous devez être sur une branche sans commits non publiés pour utiliser le rebase.'
+						</p>
 
-				<p>
-					<strong>Attention :</strong> N’effectuez pas de rebase sur des branches déjà poussées sur un dépôt partagé, car cela réécrit l’historique et peut perturber le travail de vos collègues. Il est recommandé de tester ces opérations sur des dépôts de test ou des branches locales avant de les utiliser en production.
-				</p>
+						<p>
+							<strong>Attention :</strong> N’effectuez pas de rebase sur des branches déjà poussées sur un dépôt partagé, car cela réécrit l’historique et peut perturber le travail de vos collègues. Il est recommandé de tester ces opérations sur des dépôts de test ou des branches locales avant de les utiliser en production.
+						</p>
 
-				Voici quelques avantages de rebase :<br>
-				<ul>
-					<li>Simplifie l'historique : rebase permet de mettre à jour l'historique en appliquant les modifications sur une nouvelle base, ce qui rend l'historique plus facile à comprendre et à analyser.</li>
-					<li>Résout les conflits : rebase permet de résoudre les conflits de fusion en modifiant les fichiers conflictueux et en créant de nouveaux commits.</li>
-					<li>Simplifie l'intégration : rebase permet de simplifier l'intégration des modifications avec d'autres branches en appliquant les modifications sur une nouvelle base, ce qui facilite la résolution des conflits et la fusion des branches.</li>
-				</ul>
+						Voici quelques avantages de rebase :<br>
+						<ul>
+							<li>Simplifie l'historique : rebase permet de mettre à jour l'historique en appliquant les modifications sur une nouvelle base, ce qui rend l'historique plus facile à comprendre et à analyser.</li>
+							<li>Résout les conflits : rebase permet de résoudre les conflits de fusion en modifiant les fichiers conflictueux et en créant de nouveaux commits.</li>
+							<li>Simplifie l'intégration : rebase permet de simplifier l'intégration des modifications avec d'autres branches en appliquant les modifications sur une nouvelle base, ce qui facilite la résolution des conflits et la fusion des branches.</li>
+						</ul>
 
-				<h3>Rebase simple</h3>
-				<p>
-					Pour mettre à jour votre branche <code>ma-branche</code> avec les derniers commits de <code>main</code>, exécutez :
-				</p>
-				<pre class="language-bash">
-			<button class="btn btn-light copy-btn">Copier</button>
+						<h3>Rebase simple</h3>
+						<p>
+							Pour mettre à jour votre branche <code>ma-branche</code> avec les derniers commits de <code>main</code>, exécutez :
+						</p>
+						<pre class="language-bash">
+						<button class="btn btn-light copy-btn">Copier</button>
 	<code>
 	git checkout ma-branche
 	git rebase main
@@ -500,6 +502,8 @@
 				<p>
 					<strong>Attention :</strong> N’effectuez pas de rebase sur des branches déjà poussées sur un dépôt partagé, car cela réécrit l’historique et peut perturber le travail de vos collègues. Il est recommandé de tester ces opérations sur des dépôts de test ou des branches locales avant de les utiliser en production.
 				</p>
+					</div>
+				</div>
 			</section>
 
 
