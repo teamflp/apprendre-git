@@ -59,9 +59,9 @@ if (toggleDarkModeBtn) {
     });
     if (localStorage.getItem('darkMode') === null) {
         if (window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches && !document.body.classList.contains('dark-mode')) {
-             enableDarkMode();
+            enableDarkMode();
         } else if (!document.body.classList.contains('dark-mode')) {
-             disableDarkMode();
+            disableDarkMode();
         }
     }
 }
@@ -72,8 +72,8 @@ const copyButtons = document.querySelectorAll('.copy-btn');
 const srFeedback = document.getElementById('sr-feedback');
 
 copyButtons.forEach((btn) => {
-	if (!btn.hasAttribute('aria-label')) {
-		// Try to get a more descriptive label from a potential preceding h3 or h2
+    if (!btn.hasAttribute('aria-label')) {
+        // Try to get a more descriptive label from a potential preceding h3 or h2
         let label = 'Copier le bloc de code';
         const preParent = btn.closest('pre');
         if (preParent) {
@@ -86,62 +86,62 @@ copyButtons.forEach((btn) => {
                 sibling = sibling.previousElementSibling;
             }
         }
-		btn.setAttribute('aria-label', label);
-	}
-	btn.addEventListener('click', () => {
+        btn.setAttribute('aria-label', label);
+    }
+    btn.addEventListener('click', () => {
         let actualCodeBlock = null;
         const parentPre = btn.closest('pre');
         if (parentPre) {
             actualCodeBlock = parentPre.querySelector('code');
         }
 
-		if (actualCodeBlock) {
-			const textToCopy = actualCodeBlock.innerText;
-			navigator.clipboard.writeText(textToCopy)
-				.then(() => {
-					const originalText = btn.textContent;
-					btn.textContent = 'Copié !';
-					if (srFeedback) srFeedback.textContent = 'Code copié dans le presse-papiers !';
-					setTimeout(() => {
-						btn.textContent = 'Copier';
-						if (srFeedback) srFeedback.textContent = '';
-					}, 2000);
-				})
-				.catch((err) => {
-					console.error('Échec de la copie :', err);
-					if (srFeedback) srFeedback.textContent = 'Échec de la copie du code.';
+        if (actualCodeBlock) {
+            const textToCopy = actualCodeBlock.innerText;
+            navigator.clipboard.writeText(textToCopy)
+                .then(() => {
+                    const originalText = btn.textContent;
+                    btn.textContent = 'Copié !';
+                    if (srFeedback) srFeedback.textContent = 'Code copié dans le presse-papiers !';
+                    setTimeout(() => {
+                        btn.textContent = 'Copier';
+                        if (srFeedback) srFeedback.textContent = '';
+                    }, 2000);
+                })
+                .catch((err) => {
+                    console.error('Échec de la copie :', err);
+                    if (srFeedback) srFeedback.textContent = 'Échec de la copie du code.';
                     setTimeout(() => {
                         if (srFeedback) srFeedback.textContent = '';
                     }, 3000);
-				});
-		} else {
+                });
+        } else {
             console.error("Bloc de code non trouvé pour le bouton copier.", btn);
         }
-	});
+    });
 });
 
 // Recherche code
 const searchInput = document.getElementById('searchBar');
 if (searchInput) {
-	searchInput.addEventListener('input', () => {
-		const query = searchInput.value.toLowerCase();
-		const allPreElements = document.querySelectorAll('pre');
+    searchInput.addEventListener('input', () => {
+        const query = searchInput.value.toLowerCase();
+        const allPreElements = document.querySelectorAll('pre');
 
-		allPreElements.forEach(preElement => {
-			const codeEl = preElement.querySelector('code');
+        allPreElements.forEach(preElement => {
+            const codeEl = preElement.querySelector('code');
 
-			if (codeEl) {
-				const codeText = codeEl.innerText.toLowerCase();
-				if (codeText.includes(query)) {
-					preElement.classList.remove('hiddenBySearch');
-				} else {
-					preElement.classList.add('hiddenBySearch');
-				}
-			}
-		});
-	});
+            if (codeEl) {
+                const codeText = codeEl.innerText.toLowerCase();
+                if (codeText.includes(query)) {
+                    preElement.classList.remove('hiddenBySearch');
+                } else {
+                    preElement.classList.add('hiddenBySearch');
+                }
+            }
+        });
+    });
 } else {
-	console.error("L'élément de la barre de recherche ('searchBar') n'a pas été trouvé.");
+    console.error("L'élément de la barre de recherche ('searchBar') n'a pas été trouvé.");
 }
 
 // Hamburger Menu
@@ -163,17 +163,17 @@ const tocLinks = document.querySelectorAll('#navbarTOC a');
 const contentSections = document.querySelectorAll('div.contentWithToc section[id]');
 
 function changeActiveTocLink() {
-	let currentSectionId = '';
-	const offset = window.innerHeight * 0.2;
+    let currentSectionId = '';
+    const offset = window.innerHeight * 0.2;
 
-	contentSections.forEach(section => {
+    contentSections.forEach(section => {
         const sectionTop = section.offsetTop;
         const sectionBottom = sectionTop + section.offsetHeight;
         // Check if the section is within the "activation zone" (near the top 20% of viewport)
-		if (window.scrollY + offset >= sectionTop && window.scrollY + offset < sectionBottom) {
-			currentSectionId = section.id;
-		}
-	});
+        if (window.scrollY + offset >= sectionTop && window.scrollY + offset < sectionBottom) {
+            currentSectionId = section.id;
+        }
+    });
 
     if (!currentSectionId && contentSections.length > 0) {
         // Fallback: if no section is in the "activation zone", find the topmost section currently visible
@@ -191,32 +191,32 @@ function changeActiveTocLink() {
     }
 
 
-	tocLinks.forEach((link) => {
-		link.classList.remove('active-toc-link');
-		link.removeAttribute('aria-current');
-		const linkHref = link.getAttribute('href');
+    tocLinks.forEach((link) => {
+        link.classList.remove('active-toc-link');
+        link.removeAttribute('aria-current');
+        const linkHref = link.getAttribute('href');
 
-		if (linkHref && currentSectionId && linkHref.substring(1) === currentSectionId) {
-			link.classList.add('active-toc-link');
-			link.setAttribute('aria-current', 'page');
+        if (linkHref && currentSectionId && linkHref.substring(1) === currentSectionId) {
+            link.classList.add('active-toc-link');
+            link.setAttribute('aria-current', 'page');
 
-			const tocNav = document.getElementById('navbarTOC');
-			if (tocNav && tocNav.contains(link)) {
-				const linkRect = link.getBoundingClientRect();
-				const tocRect = tocNav.getBoundingClientRect();
+            const tocNav = document.getElementById('navbarTOC');
+            if (tocNav && tocNav.contains(link)) {
+                const linkRect = link.getBoundingClientRect();
+                const tocRect = tocNav.getBoundingClientRect();
 
-				const isVisible = (
-					linkRect.top >= tocRect.top &&
-					linkRect.bottom <= tocRect.bottom
-				);
+                const isVisible = (
+                    linkRect.top >= tocRect.top &&
+                    linkRect.bottom <= tocRect.bottom
+                );
 
-				if (!isVisible) {
-					// Using 'auto' for behavior as 'smooth' can be slow with frequent scroll events
-					link.scrollIntoView({ behavior: 'auto', block: 'nearest', inline: 'nearest' });
-				}
-			}
-		}
-	});
+                if (!isVisible) {
+                    // Using 'auto' for behavior as 'smooth' can be slow with frequent scroll events
+                    link.scrollIntoView({ behavior: 'auto', block: 'nearest', inline: 'nearest' });
+                }
+            }
+        }
+    });
 }
 
 if (contentSections.length > 0 && tocLinks.length > 0) {

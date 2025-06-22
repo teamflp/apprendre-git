@@ -73,7 +73,7 @@ body.dark-mode #readingProgress {
     height: 100%;
     overflow-y: auto;
     background-color: #ffffffcc;
-   /* backdrop-filter: blur(5px);*/
+    backdrop-filter: blur(5px);
     border-right: 1px solid #ddd;
     padding: 1rem;
     z-index: 1000;
@@ -161,12 +161,6 @@ pre {
     /* plus d'espace, pour éviter la collision */
 }
 
-.bloc-bash {
-    display: flex;
-    align-items: center !important;
-    justify-content: start !important;
-    background-color: #EDE233 !important;
-}
 
 body.dark-mode code[class*="language-"] {
     color: #eee;
@@ -192,7 +186,7 @@ body.dark-mode code[class*="language-"] {
     font-size: 0.8rem;
     padding: 2px 8px;
     z-index: 10;
-    border: 1px solid #fff;
+    border: 1px solid #ddd;
 }
 
 /*---------------------- Footer ----------------------*/
