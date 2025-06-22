@@ -22,13 +22,40 @@ btnScrollTop.addEventListener('click', () => {
 
 // Dark/Light
 const toggleDarkModeBtn = document.getElementById('toggleDarkMode');
+let darkMode = localStorage.getItem('darkMode');
+
+// Function to enable dark mode
+const enableDarkMode = () => {
+	document.body.classList.add('dark-mode');
+	toggleDarkModeBtn.textContent = 'Light Mode';
+	toggleDarkModeBtn.setAttribute('aria-pressed', 'true');
+	localStorage.setItem('darkMode', 'enabled');
+}
+
+// Function to disable dark mode
+const disableDarkMode = () => {
+	document.body.classList.remove('dark-mode');
+	toggleDarkModeBtn.textContent = 'Dark Mode';
+	toggleDarkModeBtn.setAttribute('aria-pressed', 'false');
+	localStorage.setItem('darkMode', 'disabled');
+}
+
+// Check local storage on page load
+if (darkMode === 'enabled') {
+	enableDarkMode();
+} else {
+    // Default to light mode if no preference or preference is 'disabled'
+    disableDarkMode();
+}
+
+// Event listener for the toggle button
 toggleDarkModeBtn.addEventListener('click', () => {
-	const isDarkMode = document.body.classList.toggle('dark-mode');
-	toggleDarkModeBtn.setAttribute('aria-pressed', isDarkMode.toString());
-	if (isDarkMode) {
-		toggleDarkModeBtn.textContent = 'Light Mode';
+	// Re-check local storage in case it was changed in another tab (though less likely for localStorage)
+	darkMode = localStorage.getItem('darkMode');
+	if (darkMode !== 'enabled') {
+		enableDarkMode();
 	} else {
-		toggleDarkModeBtn.textContent = 'Dark Mode';
+		disableDarkMode();
 	}
 });
 
@@ -68,19 +95,37 @@ copyButtons.forEach((btn) => {
 
 // Recherche code
 const searchInput = document.getElementById('searchBar');
-searchInput.addEventListener('input', () => {
-	const query = searchInput.value.toLowerCase();
-	const codeBlocks = document.querySelectorAll('pre code');
-	codeBlocks.forEach(codeEl => {
-		const parentPre = codeEl.parentElement;
-		// Vérifie que le texte du code inclut la recherche
-		if (codeEl.innerText.toLowerCase().includes(query)) {
-			parentPre.classList.remove('hiddenBySearch');
-		} else {
-			parentPre.classList.add('hiddenBySearch');
-		}
+
+if (searchInput) {
+	searchInput.addEventListener('input', () => {
+		const query = searchInput.value.toLowerCase();
+		// On cible tous les éléments <pre> qui contiennent des blocs de code.
+		// C'est l'élément <pre> entier que nous voulons masquer/afficher.
+		const allPreElements = document.querySelectorAll('pre');
+
+		allPreElements.forEach(preElement => {
+			// On cherche un élément <code> à l'intérieur de ce <pre>
+			const codeEl = preElement.querySelector('code');
+
+			if (codeEl) { // Si un élément <code> existe dans ce <pre>
+				const codeText = codeEl.innerText.toLowerCase();
+				if (codeText.includes(query)) {
+					preElement.classList.remove('hiddenBySearch');
+				} else {
+					preElement.classList.add('hiddenBySearch');
+				}
+			} else {
+				// Si un <pre> n'a pas de <code> (peu probable pour ce document, mais bonne pratique)
+				// on pourrait choisir de le cacher ou de le laisser visible.
+				// Pour ce cas, laissons le visible s'il ne contient pas de code à filtrer.
+				// Ou, si tous les <pre> sont censés avoir du code, on pourrait aussi le cacher.
+				// Pour l'instant, ne faisons rien pour les <pre> sans <code>.
+			}
+		});
 	});
-});
+} else {
+	console.error("L'élément de la barre de recherche ('searchBar') n'a pas été trouvé.");
+}
 
 
 // Hamburger
@@ -113,6 +158,17 @@ function changeActiveTocLink() {
 		if (linkHref && currentSectionId && linkHref.substring(1) === currentSectionId) {
 			link.classList.add('active-toc-link');
 			link.setAttribute('aria-current', 'page');
+
+			// Check if the active link is visible in the TOC, scroll if not
+			const tocNav = document.getElementById('navbarTOC'); // Get the TOC container
+			if (tocNav) {
+				const linkRect = link.getBoundingClientRect();
+				const tocRect = tocNav.getBoundingClientRect();
+
+				if (linkRect.top < tocRect.top || linkRect.bottom > tocRect.bottom) {
+					link.scrollIntoView({ behavior: 'smooth', block: 'nearest', inline: 'nearest' });
+				}
+			}
 		}
 	});
 }
