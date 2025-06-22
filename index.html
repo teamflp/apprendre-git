@@ -120,7 +120,7 @@
 			<!-- (2) INSTALLATION & CONFIG -->
 			<section id="installation" class="mb-4">
 				<div class="card shadow-sm">
-					<h2>2. Installation et configuration</h2>
+					<h2 class="card-header text-primary">2. Installation et configuration</h2>
 					<div class="card-body">
 						<h3>Installation</h3>
 						<p>
@@ -133,9 +133,9 @@
 						</p>
 
 					<pre class="language-bash">
-			<div>
+
 				<button class="btn btn-light copy-btn">Copier</button>
-			</div>
+
 
 	<code>
 	sudo apt update
@@ -175,7 +175,7 @@
 
 			<!-- (3) DEPOTS -->
 			<section id="depots">
-				<h2>3. Initialiser et gérer un dépôt</h2>
+				<h2 class="card-header text-primary">3. Initialiser et gérer un dépôt</h2>
 				<h3>Initialiser un nouveau dépôt</h3>
 				<p>
 					Pour commencer à suivre un projet avec Git, on fait :
@@ -227,7 +227,7 @@
 			<section id="modifications" class="mb-4">
 				<div class="card shadow-sm">
 					<div class="card-body">
-						<h2>4. Suivi et validation des modifications</h2>
+						<h2 class="card-header text-primary">4. Suivi et validation des modifications</h2>
 						<h3>Vérifier l'état</h3>
 						<p>Pour voir quels fichiers sont modifiés ou non suivis :</p>
 						<pre class="language-bash">
@@ -277,7 +277,7 @@
 
 			<!-- (5) BRANCHES -->
 			<section id="branches">
-				<h2>5. Branches et navigation</h2>
+				<h2 class="card-header text-primary">5. Branches et navigation</h2>
 				<h3>Créer et lister</h3>
 				<p>Pour voir ou créer une branche :</p>
 				<pre class="language-bash">
@@ -313,7 +313,7 @@
 
 			<!-- (6) MERGE & CONFLITS -->
 			<section id="fusion">
-				<h2>6. Merge (Fusion) et Conflits</h2>
+				<h2 class="card-header text-primary">6. Merge (Fusion) et Conflits</h2>
 				<h3>Fusionner deux branches</h3>
 				<p>
 					On se place sur la branche où on veut intégrer les changements (souvent main ou master), puis on
@@ -350,7 +350,7 @@
 
 			<!-- (7) REBASE -->
 			<section id="rebase">
-				<h2>7. Rebase (Réécriture de l’historique)</h2>
+				<h2 class="card-header text-primary">7. Rebase (Réécriture de l’historique)</h2>
 				<p>
 					La commande <code>git rebase</code> permet de réécrire l'historique du dépôt en appliquant une série de commits sur une nouvelle base. Cela permet d'avoir un historique plus linéaire et propre, de résoudre les conflits de fusion, et de simplifier l'intégration des modifications avec d'autres branches. Cela permet d’obtenir un historique plus <em>linéaire</em> et lisible, en évitant les commits de fusion inutiles. Elle est particulièrement utile pour intégrer les dernières modifications d’une branche (ex. : <code>main</code>) dans votre branche de développement.
 					<br><br><strong>Note :</strong> Le rebase modifie l'historique de votre dépôt, vous devez être sur une branche sans commits non publiés pour utiliser le rebase.'
@@ -494,7 +494,7 @@
 
 			<!-- (8) COMPARAISON & ANALYSE -->
 			<section id="comparaison">
-				<h2>8. Comparaison & Analyse</h2>
+				<h2 class="card-header text-primary">8. Comparaison & Analyse</h2>
 				<p>
 					Quelques commandes utiles pour comparer ou analyser l’historique :
 				</p>
@@ -514,7 +514,7 @@
 
 			<!-- (9) ANNULER/COMMITS -->
 			<section id="annuler">
-				<h2>9. Annuler ou corriger des commits</h2>
+				<h2 class="card-header text-primary">9. Annuler ou corriger des commits</h2>
 				<h3>Revert</h3>
 				<p>
 					Crée un commit inverse pour annuler un commit précédent :
@@ -552,7 +552,7 @@
 
 			<!-- (10) STASH -->
 			<section id="stash">
-				<h2>10. Stash : mettre de côté des modifs</h2>
+				<h2 class="card-header text-primary">10. Stash : mettre de côté des modifs</h2>
 				<p>
 					On peut sauvegarder temporairement son travail sans faire de commit final :
 				</p>
@@ -568,7 +568,7 @@
 
 			<!-- (11) DISTANTS & COLLAB -->
 			<section id="depots-distants">
-				<h2>11. Dépôts Distants & Collaboration</h2>
+				<h2 class="card-header text-primary">11. Dépôts Distants & Collaboration</h2>
 				<p>
 					Quelques commandes pour synchroniser avec un serveur (GitHub, GitLab…) :
 				</p>
@@ -588,7 +588,7 @@
 
 			<!-- (12) TAGS -->
 			<section id="tags">
-				<h2>12. Gestion des tags</h2>
+				<h2 class="card-header text-primary">12. Gestion des tags</h2>
 				<p>
 					Les tags servent souvent à marquer des versions (v1.0, v2.0…).
 				</p>
@@ -603,7 +603,7 @@
 
 			<!-- (13) SUBMODULES -->
 			<section id="submodules">
-				<h2>13. Submodules (Sous-modules)</h2>
+				<h2 class="card-header text-primary">13. Submodules (Sous-modules)</h2>
 				<p>
 					On peut inclure un autre dépôt Git à l’intérieur du nôtre (ex: librairie partagée).
 				</p>
@@ -618,7 +618,7 @@
 
 			<!-- (14) AVANCEES & UTILITAIRES -->
 			<section id="avancees">
-				<h2>14. Commandes avancées & utilitaires</h2>
+				<h2 class="card-header text-primary">14. Commandes avancées & utilitaires</h2>
 				<p>
 					Voici quelques commandes plus “spéciales” :
 				</p>
@@ -636,7 +636,7 @@
 
 			<!-- (15) BONNES PRATIQUES -->
 			<section id="bonnes-pratiques">
-				<h2>15. Bonnes pratiques</h2>
+				<h2 class="card-header text-primary">15. Bonnes pratiques</h2>
 				<ol>
 					<li>Commits fréquents & atomiques (petites étapes faciles à comprendre).</li>
 					<li>Messages de commit clairs (expliquez “pourquoi” et pas juste “ce qui a changé”).</li>
@@ -650,7 +650,7 @@
 
 			<!-- (16) COMMANDES AVANCÉES DE GIT -->
 			<section id="commandes-avancees-git">
-				<h2>16. Les Commandes Avancées de Git</h2>
+				<h2 class="card-header text-primary">16. Les Commandes Avancées de Git</h2>
 				<p>
 					Git propose de nombreuses commandes avancées permettant de gérer finement l’historique du dépôt, de résoudre des problèmes complexes ou d’automatiser certaines tâches. Voici quelques-unes de ces commandes avec leurs explications détaillées :
 				</p>
@@ -952,7 +952,7 @@
 			<!-- TABLEAU COMPLET DES COMMANDES -->
 			<section id="tableau-commands">
 				<div class="table-responsive mt-3">
-					<h2>Tableau complet des commandes Git</h2>
+					<h2 class="card-header text-primary">Tableau complet des commandes Git</h2>
 					<p>Retrouvez ci-dessous un récapitulatif complet :</p>
 					<div class="table-responsive mt-3">
 						<table class="table table-bordered table-hover align-middle">
@@ -1328,7 +1328,7 @@
 
 			<!-- EXEMPLES CONCRETS -->
 			<section id="exemples">
-				<h2>Exemples Concrets</h2>
+				<h2 class="card-header text-primary">Exemples Concrets</h2>
 				<h4>1. Annuler le dernier commit en gardant les modifs</h4>
 				<pre class="language-bash">
 		<button class="btn btn-light copy-btn">Copier</button>
@@ -1351,7 +1351,7 @@
 
 			<!-- EXERCICES & PIEGES -->
 			<section id="exercices-pieges">
-				<h2>Exercices & pièges courants</h2>
+				<h2 class="card-header text-primary">Exercices & pièges courants</h2>
 				<h3>Exercices pratiques</h3>
 				<ul>
 					<li><strong>Exercice 1 :</strong> Créer un dépôt local, y faire deux commits et pousser sur GitHub.
@@ -1377,7 +1377,7 @@
 
 			<!-- CONVENTIONS DE COMMIT -->
 			<section id="commit-conventions">
-				<h2>Conventions Commit</h2>
+				<h2 class="card-header text-primary">Conventions Commit</h2>
 				<p>
 					Parfois on suit des règles pour les messages de commit (ex. <em>Conventional Commits</em>),
 					afin de générer des changelogs automatiques, d’avoir une structure claire, etc.
@@ -1394,7 +1394,7 @@
 
 			<!-- CI/CD GITHUB ACTIONS -->
 			<section id="github-actions">
-				<h2>CI/CD (GitHub Actions)</h2>
+				<h2 class="card-header text-primary">CI/CD (GitHub Actions)</h2>
 				<p>
 					Pour automatiser des tests ou un déploiement, on peut créer un fichier
 					<code>.github/workflows/ci.yml</code> comme ceci :
@@ -1425,7 +1425,7 @@
 
 			<!-- GLOSSAIRE GIT -->
 			<section id="glossaire">
-				<h2>Glossaire Git</h2>
+				<h2 class="card-header text-primary">Glossaire Git</h2>
 				<ul>
 					<li><strong>stash</strong> : mettre de côté des modifications non commit (temporaire).</li>
 					<li><strong>rebase</strong> : rejouer des commits sur une autre base pour un historique plus
@@ -1442,7 +1442,7 @@
 
 			<!-- CONCLUSION -->
 			<section id="conclusion">
-				<h2>Conclusion</h2>
+				<h2 class="card-header text-primary">Conclusion</h2>
 				<p>
 					Vous avez vu ici toutes les bases de Git, plus des parties avancées (rebase, stash, etc.).
 					Entraînez-vous régulièrement pour retenir les commandes.
@@ -1457,7 +1457,7 @@
 
 			<!-- (24) GIT WORKFLOWS -->
 			<section id="workflows">
-				<h2>24. Git Workflows</h2>
+				<h2 class="card-header text-primary">24. Git Workflows</h2>
 				<h3>Introduction aux Workflows Git</h3>
 				<p>Un workflow Git (ou flux de travail Git) est un ensemble de conventions, de recommandations et de stratégies sur la manière d'utiliser Git efficacement au sein d'un projet ou d'une équipe. Choisir un workflow adapté permet de structurer le développement, de faciliter la collaboration, de gérer les versions et de maintenir un historique de projet propre et compréhensible. Il n'existe pas de workflow universel ; le choix dépendra souvent de la taille de l'équipe, de la nature du projet (ex: application web, bibliothèque), du cycle de release, et des outils de CI/CD utilisés.</p>
 				<p>Les workflows définissent typiquement :</p>
@@ -1565,7 +1565,7 @@
 
 			<!-- (25) HOOKS GIT -->
 			<section id="hooks-git">
-				<h2>25. Hooks Git (Crochets Git)</h2>
+				<h2 class="card-header text-primary">25. Hooks Git (Crochets Git)</h2>
 
 				<h3>Qu'est-ce qu'un Hook Git ?</h3>
 				<p>Les hooks (ou "crochets") Git sont des scripts que Git exécute automatiquement avant ou après certains événements importants de son cycle de vie, tels que la création de commits, le push de modifications, ou le changement de branches. Ils vous permettent de personnaliser le comportement de Git et d'automatiser des tâches spécifiques à votre workflow.</p>
@@ -1681,7 +1681,7 @@
 
 			<!-- (26) FINS DE LIGNE & .GITATTRIBUTES -->
 			<section id="gitattributes">
-				<h2>26. Fins de Ligne & <code>.gitattributes</code></h2>
+				<h2 class="card-header text-primary">26. Fins de Ligne & <code>.gitattributes</code></h2>
 
 				<h3>Le Problème des Fins de Ligne (CRLF vs LF)</h3>
 				<p>L'un des problèmes les plus courants et frustrants lorsque l'on travaille en équipe sur différents systèmes d'exploitation est la gestion des fins de ligne. Les systèmes Windows utilisent une séquence de deux caractères : retour chariot (Carriage Return, CR) et saut de ligne (Line Feed, LF), souvent notée CRLF. Les systèmes Unix (Linux, macOS) utilisent uniquement un saut de ligne (LF).</p>
@@ -1795,7 +1795,7 @@
 
 			<!-- (27) GIT RERERE -->
 			<section id="git-rerere">
-				<h2>27. <code>git rerere</code> (Reuse Recorded Resolution)</h2>
+				<h2 class="card-header text-primary">27. <code>git rerere</code> (Reuse Recorded Resolution)</h2>
 
 				<h3>Le Problème : Résoudre les Mêmes Conflits Répétitivement</h3>
 				<p>Lorsque vous travaillez sur des branches qui vivent longtemps et que vous rebasez fréquemment sur une branche principale active (comme <code>main</code> ou <code>develop</code>), ou lorsque vous effectuez des merges répétitifs entre les mêmes branches, vous pouvez vous retrouver à résoudre les mêmes conflits de fusion encore et encore. Cela peut être fastidieux et source d'erreurs.</p>
@@ -1849,7 +1849,7 @@
 
 			<!-- (28) COLLABORATION AVANCEE SUR PLATEFORMES -->
 			<section id="collaboration-plateformes">
-				<h2>28. Collaboration Avancée sur Plateformes</h2>
+				<h2 class="card-header text-primary">28. Collaboration Avancée sur Plateformes</h2>
 
 				<h3>Introduction : Au-delà du <code>push</code> et <code>pull</code></h3>
 				<p>Si les commandes Git de base comme <code>push</code>, <code>pull</code>, <code>commit</code>, et <code>branch</code> sont essentielles pour le travail individuel et la synchronisation simple, la collaboration moderne sur des projets logiciels, en particulier avec des équipes ou sur des projets open source, s'appuie fortement sur les fonctionnalités offertes par les plateformes d'hébergement Git telles que GitHub, GitLab, Bitbucket, etc. Ces plateformes fournissent des outils et des workflows qui facilitent la revue de code, la discussion, le suivi des tâches et l'intégration des contributions de manière structurée.</p>
