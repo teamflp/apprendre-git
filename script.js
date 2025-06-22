@@ -95,19 +95,37 @@ copyButtons.forEach((btn) => {
 
 // Recherche code
 const searchInput = document.getElementById('searchBar');
-searchInput.addEventListener('input', () => {
-	const query = searchInput.value.toLowerCase();
-	const codeBlocks = document.querySelectorAll('pre code');
-	codeBlocks.forEach(codeEl => {
-		const parentPre = codeEl.parentElement;
-		// Vérifie que le texte du code inclut la recherche
-		if (codeEl.innerText.toLowerCase().includes(query)) {
-			parentPre.classList.remove('hiddenBySearch');
-		} else {
-			parentPre.classList.add('hiddenBySearch');
-		}
+
+if (searchInput) {
+	searchInput.addEventListener('input', () => {
+		const query = searchInput.value.toLowerCase();
+		// On cible tous les éléments <pre> qui contiennent des blocs de code.
+		// C'est l'élément <pre> entier que nous voulons masquer/afficher.
+		const allPreElements = document.querySelectorAll('pre');
+
+		allPreElements.forEach(preElement => {
+			// On cherche un élément <code> à l'intérieur de ce <pre>
+			const codeEl = preElement.querySelector('code');
+
+			if (codeEl) { // Si un élément <code> existe dans ce <pre>
+				const codeText = codeEl.innerText.toLowerCase();
+				if (codeText.includes(query)) {
+					preElement.classList.remove('hiddenBySearch');
+				} else {
+					preElement.classList.add('hiddenBySearch');
+				}
+			} else {
+				// Si un <pre> n'a pas de <code> (peu probable pour ce document, mais bonne pratique)
+				// on pourrait choisir de le cacher ou de le laisser visible.
+				// Pour ce cas, laissons le visible s'il ne contient pas de code à filtrer.
+				// Ou, si tous les <pre> sont censés avoir du code, on pourrait aussi le cacher.
+				// Pour l'instant, ne faisons rien pour les <pre> sans <code>.
+			}
+		});
 	});
-});
+} else {
+	console.error("L'élément de la barre de recherche ('searchBar') n'a pas été trouvé.");
+}
 
 
 // Hamburger
