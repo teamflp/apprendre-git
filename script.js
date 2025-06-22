@@ -1,0 +1,126 @@
+// Barre de progression
+const readingProgressBar = document.getElementById('readingProgress');
+window.addEventListener('scroll', () => {
+	const scrollPos = window.scrollY;
+	const docHeight = document.documentElement.scrollHeight - window.innerHeight;
+	const progress = (scrollPos / docHeight) * 100;
+	readingProgressBar.style.width = progress + '%';
+});
+
+// Bouton ScrollTop
+const btnScrollTop = document.getElementById('btnScrollTop');
+window.addEventListener('scroll', () => {
+	if (window.scrollY > 300) {
+		btnScrollTop.style.display = 'block';
+	} else {
+		btnScrollTop.style.display = 'none';
+	}
+});
+btnScrollTop.addEventListener('click', () => {
+	window.scrollTo({ top: 0, behavior: 'smooth' });
+});
+
+// Dark/Light
+const toggleDarkModeBtn = document.getElementById('toggleDarkMode');
+toggleDarkModeBtn.addEventListener('click', () => {
+	const isDarkMode = document.body.classList.toggle('dark-mode');
+	toggleDarkModeBtn.setAttribute('aria-pressed', isDarkMode.toString());
+	if (isDarkMode) {
+		toggleDarkModeBtn.textContent = 'Light Mode';
+	} else {
+		toggleDarkModeBtn.textContent = 'Dark Mode';
+	}
+});
+
+// Boutons "Copier" code
+const copyButtons = document.querySelectorAll('.copy-btn');
+const srFeedback = document.getElementById('sr-feedback'); // For screen reader announcements
+
+copyButtons.forEach((btn) => {
+	if (!btn.hasAttribute('aria-label')) {
+		// Fallback, ideally the aria-label is set in the HTML for each button individually.
+		// This generic one is better than nothing.
+		btn.setAttribute('aria-label', 'Copier le bloc de code suivant');
+	}
+	btn.addEventListener('click', () => {
+		const codeBlock = btn.nextElementSibling;
+		if (codeBlock && codeBlock.tagName.toLowerCase() === 'code') {
+			const textToCopy = codeBlock.innerText;
+			navigator.clipboard.writeText(textToCopy)
+				.then(() => {
+					btn.textContent = 'Copié !';
+					if (srFeedback) srFeedback.textContent = 'Code copié dans le presse-papiers !';
+					setTimeout(() => {
+						btn.textContent = 'Copier';
+						if (srFeedback) srFeedback.textContent = ''; // Clear announcement
+					}, 1500);
+				})
+				.catch((err) => {
+					console.error('Échec de la copie :', err);
+					if (srFeedback) srFeedback.textContent = 'Échec de la copie du code.';
+                    setTimeout(() => {
+                        if (srFeedback) srFeedback.textContent = ''; // Clear announcement
+                    }, 3000);
+				});
+		}
+	});
+});
+
+// Recherche code
+const searchInput = document.getElementById('searchBar');
+searchInput.addEventListener('input', () => {
+	const query = searchInput.value.toLowerCase();
+	const codeBlocks = document.querySelectorAll('pre code');
+	codeBlocks.forEach(codeEl => {
+		const parentPre = codeEl.parentElement;
+		// Vérifie que le texte du code inclut la recherche
+		if (codeEl.innerText.toLowerCase().includes(query)) {
+			parentPre.classList.remove('hiddenBySearch');
+		} else {
+			parentPre.classList.add('hiddenBySearch');
+		}
+	});
+});
+
+
+// Hamburger
+const hamburgerBtn = document.getElementById('hamburgerBtn');
+const navbarTOC = document.getElementById('navbarTOC'); // Already declared for hamburger
+hamburgerBtn.addEventListener('click', () => {
+	const isOpen = navbarTOC.classList.toggle('open');
+	hamburgerBtn.setAttribute('aria-expanded', isOpen.toString());
+	document.body.classList.toggle('mobile-toc-open'); // Toggle body scroll lock
+});
+
+// TOC Active Link Highlighting
+const tocLinks = document.querySelectorAll('#navbarTOC a');
+const sections = document.querySelectorAll('section[id]'); // Ensure sections have IDs
+
+function changeActiveTocLink() {
+	let currentSectionId = '';
+	const scrollPosition = window.scrollY + 100; // Offset to ensure the section is well in view
+
+	sections.forEach(section => {
+		if (section.offsetTop <= scrollPosition) {
+			currentSectionId = section.id;
+		}
+	});
+
+	tocLinks.forEach((link) => {
+		link.classList.remove('active-toc-link');
+		link.removeAttribute('aria-current');
+		const linkHref = link.getAttribute('href');
+		if (linkHref && currentSectionId && linkHref.substring(1) === currentSectionId) {
+			link.classList.add('active-toc-link');
+			link.setAttribute('aria-current', 'page');
+		}
+	});
+}
+
+
+// Initial call to set active link on page load (if not at top)
+if (window.scrollY > 0) {
+	changeActiveTocLink();
+}
+// Add scroll event listener for TOC highlighting
+window.addEventListener('scroll', changeActiveTocLink);

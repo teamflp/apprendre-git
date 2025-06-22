@@ -82,6 +82,15 @@ body.dark-mode #navbarTOC a:hover {
     color: #ffc107;
 }
 
+#navbarTOC a.active-toc-link {
+    font-weight: bold;
+    color: #007bff; /* Standard link color for active state in light mode */
+}
+
+body.dark-mode #navbarTOC a.active-toc-link {
+    color: #ffc107; /* Highlight color for active state in dark mode */
+}
+
 .contentWithToc {
     margin-left: 240px;
     /* Décalage pour laisser la colonne de TOC */
@@ -218,50 +227,69 @@ body.dark-mode footer {
 
 /*--- Menu responsive (petits écrans) ---*/
 @media (max-width: 768px) {
-    #navbarTOC {
-        position: static;
-        width: 100%;
-        height: auto;
-        border-right: none;
-        border-bottom: 1px solid #ddd;
-        margin-bottom: 1rem;
-        background-color: #ffffffcc;
-        padding: 1rem 0.5rem;
-    }
-
-    .contentWithToc {
-        margin-left: 0;
-    }
-
-    /* Sur mobile, on cache le menu par translateX */
-    #menuTopBar {
+    #menuTopBar { /* This is the bar that stays visible, containing title and hamburger */
         display: flex;
+        position: fixed; /* Keep it at the top */
+        top: 0;
+        left: 0;
+        right: 0;
+        z-index: 1030; /* Ensure it's above content but below modal-like elements if any */
+        /* background-color needs to be set for light/dark mode for #menuTopBar if it's fixed */
+    }
+
+    body.dark-mode #menuTopBar {
+        background-color: var(--bg-dark); /* Or a specific dark top bar color */
     }
 
     #navbarTOC {
+        position: fixed; /* Changed from static to fixed for overlay behavior */
+        top: 0; /* Adjust if #menuTopBar has a fixed height, e.g., top: 56px; */
+        left: 0;
+        width: 80%; /* Or a specific width like 250px */
+        max-width: 300px; /* Max width for larger small screens */
+        height: 100%;
+        border-right: 1px solid #ddd;
+        background-color: #ffffffcc; /* Already has backdrop, good */
+        padding: 1rem;
         transform: translateX(-100%);
-        /* Hors écran */
-        width: 100%;
+        transition: transform 0.3s ease-in-out; /* Smooth transition for opening/closing */
+        z-index: 1020; /* Below menuTopBar if hamburger is part of navbarTOC, or higher if menuTopBar is separate */
+        overflow-y: auto; /* Allow scrolling within TOC if content is long */
+        margin-bottom: 0; /* Remove margin-bottom as it's fixed */
     }
+
+    /* Adjust top position if #menuTopBar has a fixed height */
+    /* Assuming #menuTopBar height is around 56px (typical navbar height) */
+    #navbarTOC {
+        top: 56px; /* Start below the menuTopBar */
+        height: calc(100% - 56px); /* Adjust height accordingly */
+    }
+
 
     #navbarTOC.open {
         transform: translateX(0);
     }
 
     .contentWithToc {
-        margin-left: 0;
-        /* plus de sidebar dans la mise en page */
+        margin-left: 0; /* No margin needed as TOC is an overlay */
+        padding-top: 56px; /* Add padding to prevent content from being hidden behind fixed menuTopBar */
     }
 
     .hamburgerBtn {
-        float: right;
+        /* float: right; */ /* Not needed if using flexbox on parent */
         display: block;
         font-size: 1.5rem;
-        margin-right: 1rem;
+        /* margin-right: 1rem; */ /* Adjust spacing as needed */
+        /* Ensure hamburger is clickable, might need higher z-index if it's part of #menuTopBar */
     }
 
     .hero {
-        margin-top: -800px;
-        /* Pour éviter le chevauchement */
+        /* margin-top: -800px; */ /* REMOVE THIS HACK */
+        /* padding-top might be needed if not using .contentWithToc logic, but .contentWithToc should handle it */
+    }
+
+    /* Ensure body doesn't scroll when mobile TOC is open */
+    body.mobile-toc-open {
+        overflow: hidden;
     }
 }
