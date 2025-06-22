@@ -67,6 +67,7 @@
 		<a href="#hooks-git">25. Hooks Git</a>
 		<a href="#gitattributes">26. Fins de Ligne & .gitattributes</a>
 		<a href="#git-rerere">27. `git rerere`</a>
+		<a href="#collaboration-plateformes">28. Collaboration Avancée sur Plateformes</a>
 
 		<hr />
 		<button class="btn btn-sm btn-dark" id="toggleDarkMode" aria-pressed="false" aria-label="Basculer le mode d'affichage entre clair et sombre">Dark Mode</button>
@@ -2097,6 +2098,116 @@ exit 0</code></pre>
 				<div class="alert alert-success" role="alert">
 					<strong>En résumé :</strong> <code>git rerere</code> est un outil discret mais puissant qui apprend de vos résolutions de conflits passées pour vous faire gagner du temps sur des conflits identiques à l'avenir. Activez-le et laissez-le travailler en arrière-plan !
 				</div>
+			</section>
+
+			<!-- (28) COLLABORATION AVANCEE SUR PLATEFORMES -->
+			<section id="collaboration-plateformes">
+				<h2>28. Collaboration Avancée sur Plateformes</h2>
+
+				<h3>Introduction : Au-delà du <code>push</code> et <code>pull</code></h3>
+				<p>Si les commandes Git de base comme <code>push</code>, <code>pull</code>, <code>commit</code>, et <code>branch</code> sont essentielles pour le travail individuel et la synchronisation simple, la collaboration moderne sur des projets logiciels, en particulier avec des équipes ou sur des projets open source, s'appuie fortement sur les fonctionnalités offertes par les plateformes d'hébergement Git telles que GitHub, GitLab, Bitbucket, etc. Ces plateformes fournissent des outils et des workflows qui facilitent la revue de code, la discussion, le suivi des tâches et l'intégration des contributions de manière structurée.</p>
+
+				<h3>Pull Requests (PRs) / Merge Requests (MRs) : Le Cœur de la Collaboration</h3>
+				<p>Les Pull Requests (terme utilisé par GitHub et Bitbucket) ou Merge Requests (terme utilisé par GitLab) sont le mécanisme central de la collaboration sur ces plateformes. Une PR/MR est une proposition formelle d'intégrer les changements d'une branche (par exemple, une branche de fonctionnalité) dans une autre (souvent la branche principale comme <code>main</code> ou <code>develop</code>).</p>
+				<h5>Bonnes pratiques pour la création de PRs/MRs :</h5>
+				<ul>
+					<li><strong>Titre clair et concis :</strong> Le titre doit résumer l'objectif de la PR/MR. Beaucoup d'équipes utilisent des préfixes (ex: <code>feat:</code>, <code>fix:</code>, <code>docs:</code>) inspirés des Conventional Commits.</li>
+					<li><strong>Description détaillée :</strong> Expliquez le <em>pourquoi</em> des changements, le problème résolu ou la fonctionnalité ajoutée. Incluez des liens vers les issues/tickets concernés. Si des changements d'interface utilisateur sont impliqués, des captures d'écran ou des GIFs sont très utiles.</li>
+					<li><strong>Commits atomiques et propres :</strong> La branche source de la PR/MR devrait avoir un historique de commits propre et compréhensible. Chaque commit devrait représenter une étape logique. Utilisez le <a href="#rebase">rebase interactif</a> pour nettoyer votre historique local avant de créer la PR/MR ou de la mettre à jour.</li>
+					<li><strong>Petites PRs/MRs ciblées :</strong> Privilégiez des PRs/MRs de petite taille, focalisées sur un seul objectif. Elles sont plus faciles et rapides à réviser, à tester et à merger.</li>
+					<li><strong>Auto-revue :</strong> Relisez votre propre code et la description de votre PR/MR avant de la soumettre ou de demander des revues. Vous trouverez souvent des erreurs ou des améliorations vous-même.</li>
+				</ul>
+				<h5>Le processus de revue de code :</h5>
+				<p>La revue de code est une étape cruciale pour améliorer la qualité du code, partager les connaissances et détecter les bugs tôt. Voici quelques conseils :</p>
+				<ul>
+					<li><strong>Pour le réviseur :</strong>
+						<ul>
+							<li>Soyez constructif et respectueux. Le but est d'améliorer le code, pas de critiquer l'auteur.</li>
+							<li>Comprenez le contexte et l'objectif des changements.</li>
+							<li>Vérifiez la logique, la clarté, la performance, la sécurité, la maintenabilité, et la conformité aux conventions du projet.</li>
+							<li>Posez des questions plutôt que d'affirmer. Suggérez des améliorations au lieu d'imposer des changements.</li>
+							<li>Utilisez les outils de la plateforme (commentaires en ligne, suggestions de code).</li>
+						</ul>
+					</li>
+					<li><strong>Pour l'auteur :</strong>
+						<ul>
+							<li>Ne prenez pas le feedback personnellement. Considérez-le comme une opportunité d'apprendre et d'améliorer.</li>
+							<li>Répondez aux commentaires, expliquez vos choix si nécessaire, ou indiquez que vous allez appliquer les suggestions.</li>
+							<li>Poussez de nouveaux commits sur votre branche pour adresser le feedback. La PR/MR se mettra à jour automatiquement.</li>
+							<li>Remerciez les réviseurs pour leur temps.</li>
+						</ul>
+					</li>
+				</ul>
+				<p>La discussion continue jusqu'à ce que la PR/MR soit approuvée et prête à être mergée.</p>
+
+				<h3>Gestion des Issues / Tickets</h3>
+				<p>Les plateformes Git fournissent des systèmes de suivi des "issues" (problèmes, tâches, bugs, demandes de fonctionnalités). Une bonne gestion des issues est essentielle pour l'organisation du projet.</p>
+				<ul>
+					<li><strong>Création d'issues claires :</strong> Une issue bien décrite comprend un titre explicite, des étapes pour reproduire un bug (si applicable), le comportement attendu vs. le comportement observé, et toute information contextuelle pertinente (version du logiciel, environnement, etc.).</li>
+					<li><strong>Liaison Issues - Commits - PRs/MRs :</strong> La plupart des plateformes permettent de lier les issues au travail effectué. En incluant des mots-clés comme <code>fixes #123</code>, <code>closes #123</code>, ou <code>resolves #123</code> dans vos messages de commit ou descriptions de PR/MR, l'issue #123 sera automatiquement fermée lorsque la PR/MR sera mergée dans la branche par défaut. Vous pouvez aussi simplement mentionner une issue (<code>ref #123</code>) pour créer un lien sans la fermer.</li>
+					<li><strong>Labels (Étiquettes) :</strong> Utilisez des labels pour catégoriser les issues (ex: <code>bug</code>, <code>enhancement</code>, <code>documentation</code>, <code>priority:high</code>, <code>good first issue</code>). Cela aide à filtrer et à prioriser le travail.</li>
+					<li><strong>Milestones (Jalons) :</strong> Regroupez des issues et des PRs/MRs en milestones pour suivre l'avancement vers une version ou un objectif spécifique.</li>
+					<li><strong>Assignations :</strong> Assignez des issues aux membres de l'équipe pour clarifier qui est responsable de quoi.</li>
+				</ul>
+
+				<h3>Stratégies de Merge des PRs/MRs sur les Plateformes</h3>
+				<p>Lorsque une PR/MR est prête, les plateformes offrent généralement plusieurs options pour l'intégrer :</p>
+				<ul>
+					<li><strong>Merge Commit (Créer un commit de fusion) :</strong>
+						<ul>
+							<li>C'est l'option par défaut sur beaucoup de plateformes (ex: le bouton "Merge pull request" de GitHub).</li>
+							<li>Tous les commits de la branche de fonctionnalité sont conservés, et un nouveau commit de merge est créé sur la branche cible pour lier les historiques.</li>
+							<li><strong>Avantages :</strong> Préserve tout l'historique de la branche de fonctionnalité, y compris les commits individuels. Le point de merge est clairement identifiable.</li>
+							<li><strong>Inconvénients :</strong> Peut rendre l'historique de la branche principale plus "bruyant" avec de nombreux commits de merge si les branches de fonctionnalités ont beaucoup de petits commits intermédiaires.</li>
+						</ul>
+					</li>
+					<li><strong>Squash and Merge (Écraser et fusionner) :</strong>
+						<ul>
+							<li>Combine tous les commits de la branche de fonctionnalité en un seul commit sur la branche cible. Le message de ce commit unique peut être édité à partir des messages des commits originaux.</li>
+							<li><strong>Avantages :</strong> Maintient un historique de la branche principale très propre et linéaire, avec un seul commit par fonctionnalité ou PR mergée.</li>
+							<li><strong>Inconvénients :</strong> Perd la granularité de l'historique de la branche de fonctionnalité (les commits individuels de développement ne sont plus visibles sur la branche principale).</li>
+						</ul>
+					</li>
+					<li><strong>Rebase and Merge (Rebaser et fusionner) :</strong>
+						<ul>
+							<li>Prend tous les commits de la branche de fonctionnalité, les rebase sur la dernière version de la branche cible, puis les ajoute à la branche cible sans créer de commit de merge (effectue un fast-forward si possible).</li>
+							<li><strong>Avantages :</strong> Crée un historique parfaitement linéaire sur la branche principale, sans commits de merge. Les commits individuels de la fonctionnalité sont préservés.</li>
+							<li><strong>Inconvénients :</strong> Réécrit l'historique des commits de la branche de fonctionnalité (nouveaux SHA). Peut rendre plus complexe le suivi de quand exactement une branche a été "mergée" si l'on ne regarde que le graphe. Nécessite que les contributeurs soient à l'aise avec le rebase de leurs branches.</li>
+						</ul>
+					</li>
+				</ul>
+				<p>Le choix de la stratégie dépend des préférences de l'équipe et du projet. Beaucoup d'équipes optent pour "Squash and Merge" ou "Rebase and Merge" pour garder un historique <code>main</code> propre, tout en s'assurant que les PRs elles-mêmes contiennent des commits bien structurés.</p>
+
+				<h3>Forks et Contribution à des Projets Externes</h3>
+				<p>Lorsque vous voulez contribuer à un projet open source auquel vous n'avez pas les droits de push directs, le workflow typique est "Fork & Pull Request" :</p>
+				<ol>
+					<li><strong>Forker le dépôt :</strong> Sur la plateforme (GitHub, GitLab), créez une copie personnelle (un "fork") du dépôt original sous votre propre compte.</li>
+					<li><strong>Cloner votre fork :</strong> Clonez votre fork sur votre machine locale : <code>git clone https://github.com/VOTRE_NOM_UTILISATEUR/nom-du-projet.git</code></li>
+					<li><strong>Configurer un remote <code>upstream</code> :</strong> Ajoutez le dépôt original comme un remote pour pouvoir récupérer ses mises à jour : <code>git remote add upstream https://github.com/PROPRIETAIRE_ORIGINAL/nom-du-projet.git</code></li>
+					<li><strong>Créer une branche de fonctionnalité :</strong> Travaillez toujours sur une branche dédiée : <code>git checkout -b ma-contribution</code></li>
+					<li><strong>Faire vos modifications et commits.</strong></li>
+					<li><strong>Pousser votre branche sur votre fork :</strong> <code>git push origin ma-contribution</code></li>
+					<li><strong>Ouvrir une Pull Request :</strong> Depuis votre fork sur la plateforme, ouvrez une PR ciblant la branche appropriée du dépôt <code>upstream</code> (original).</li>
+					<li><strong>Maintenir son fork et sa branche à jour :</strong> Pendant que votre PR est en revue, le projet <code>upstream</code> peut évoluer. Pour mettre votre branche à jour :
+						<pre class="language-bash">
+<button class="btn btn-light copy-btn" aria-label="Copier les commandes pour mettre à jour un fork">Copier</button>
+<code>git checkout main # ou la branche principale de votre fork
+git fetch upstream
+git merge upstream/main # Mettre à jour votre main local avec le main de l'upstream
+git checkout ma-contribution
+git rebase main # Rebaser votre branche de contribution sur votre main à jour
+git push origin ma-contribution --force-with-lease # Mettre à jour la PR (force-push nécessaire après rebase)</code></pre>
+					</li>
+				</ol>
+
+				<h3>Utilisation des "Draft PRs" / "WIP PRs"</h3>
+				<p>La plupart des plateformes permettent de créer des Pull Requests en mode "Brouillon" (Draft) ou de les marquer comme "Work In Progress" (WIP) dans leur titre. C'est utile lorsque :</p>
+				<ul>
+					<li>Vous voulez obtenir un feedback préliminaire sur une idée ou une approche avant que le code ne soit finalisé.</li>
+					<li>Vous voulez utiliser l'intégration continue (CI) de la PR pour lancer des tests sur votre branche, même si elle n'est pas prête pour une revue complète.</li>
+					<li>Cela signale aux réviseurs potentiels que la PR n'est pas encore prête à être mergée.</li>
+				</ul>
+				<p>Une fois prête, vous pouvez convertir la Draft PR en une PR normale pour une revue formelle.</p>
 			</section>
 
 		</div><!-- Fin .container -->
