@@ -22,6 +22,32 @@ body.dark-mode {
     color: var(--text-dark);
 }
 
+/* Styles pour les cards en mode sombre */
+body.dark-mode .card {
+    background-color: #2d2d2d; /* Un gris légèrement plus clair que le fond du body */
+    color: var(--text-dark); /* Assurer que le texte de la card est lisible */
+    border-color: #444; /* Adapter la couleur de la bordure si nécessaire */
+}
+
+/* Assurer que les titres dans les cards en mode sombre sont bien visibles */
+body.dark-mode .card h1,
+body.dark-mode .card h2,
+body.dark-mode .card h3,
+body.dark-mode .card h4,
+body.dark-mode .card h5,
+body.dark-mode .card h6 {
+    color: var(--text-dark);
+}
+
+/* Assurer que les liens dans les cards en mode sombre sont visibles et cohérents */
+body.dark-mode .card a {
+    color: #8ab4f8; /* Suggestion de couleur de lien pour mode sombre, à ajuster */
+}
+body.dark-mode .card a:hover {
+    color: #aecbfa;
+}
+
+
 /*---------------------- Barre de progression en haut ----------------------*/
 #readingProgress {
     position: fixed;

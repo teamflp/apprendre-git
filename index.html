@@ -354,44 +354,47 @@
 			<input type="text" class="form-control" id="searchBar" placeholder="Filtrer les snippets de code…" />
 
 			<!-- (1) INTRODUCTION -->
-			<section id="introduction">
-				<h2>1. Introduction à Git</h2>
-				<h3>Qu’est-ce que Git ?</h3>
-				<p>
-					Git est un outil (logiciel) pour suivre les changements dans le code.
-					Il permet de créer un historique de toutes les modifications.
-					On peut aussi travailler à plusieurs dessus, sans se marcher sur les pieds.
-				</p>
-				<p><strong>Pourquoi utiliser Git ?</strong></p>
-				<ul>
-					<li>Revenir à une version antérieure si on casse quelque chose.</li>
-					<li>Travailler à plusieurs sur le même projet, mais sur différentes branches.</li>
-					<li>Garder un historique de tous les commits (changements).</li>
-				</ul>
-
-
-				<!-- Bouton de téléchargement -->
-				<a href="Apprendre-git-par-la-pratique.pdf" class="btn btn-primary mt-3" download="CoursCompletGit">
-					<i class="fas fa-download"></i>Télécharger le cours complet (PDF)
-				</a>
-
-				<hr />
+			<section id="introduction" class="mb-4">
+				<div class="card shadow-sm">
+					<div class="card-body">
+						<h2>1. Introduction à Git</h2>
+						<h3>Qu’est-ce que Git ?</h3>
+						<p>
+							Git est un outil (logiciel) pour suivre les changements dans le code.
+							Il permet de créer un historique de toutes les modifications.
+							On peut aussi travailler à plusieurs dessus, sans se marcher sur les pieds.
+						</p>
+						<p><strong>Pourquoi utiliser Git ?</strong></p>
+						<ul>
+							<li>Revenir à une version antérieure si on casse quelque chose.</li>
+							<li>Travailler à plusieurs sur le même projet, mais sur différentes branches.</li>
+							<li>Garder un historique de tous les commits (changements).</li>
+						</ul>
+						<!-- Bouton de téléchargement -->
+						<a href="Apprendre-git-par-la-pratique.pdf" class="btn btn-primary mt-3" download="CoursCompletGit">
+							<i class="fas fa-download"></i>Télécharger le cours complet (PDF)
+						</a>
+						<hr />
+					</div>
+				</div>
 			</section>
 
 			<!-- (2) INSTALLATION & CONFIG -->
-			<section id="installation">
-				<h2>2. Installation et configuration</h2>
-				<h3>Installation</h3>
-				<p>
-					Pour utiliser Git, on doit l’installer sur l’ordinateur.
-					Sur Linux Ubuntu/Debian, on peut faire :
-				</p>
-				<p>
-					Sur Windows ou Mac, on peut télécharger l’installeur sur le site officiel :
-					<a href="https://git-scm.com/download" target="_blank">https://git-scm.com/download</a>
-				</p>
+			<section id="installation" class="mb-4">
+				<div class="card shadow-sm">
+					<div class="card-body">
+						<h2>2. Installation et configuration</h2>
+						<h3>Installation</h3>
+						<p>
+							Pour utiliser Git, on doit l’installer sur l’ordinateur.
+							Sur Linux Ubuntu/Debian, on peut faire :
+						</p>
+						<p>
+							Sur Windows ou Mac, on peut télécharger l’installeur sur le site officiel :
+							<a href="https://git-scm.com/download" target="_blank">https://git-scm.com/download</a>
+						</p>
 
-<pre class="language-bash">
+						<pre class="language-bash">
 	<div>
 		<button class="btn btn-light copy-btn">Copier</button>
 	</div>
@@ -402,32 +405,34 @@ sudo apt install git
 </code>
 </pre>
 
-	<p>Ces deux commandes mettent à jour la liste des paquets et installent Git.</p>
+							<p>Ces deux commandes mettent à jour la liste des paquets et installent Git.</p>
 
 
-				<h3>Configuration globale</h3>
-				<p>Donner son nom et email pour que Git sache qui fait les commits :</p>
-				<pre class="language-bash">
+						<h3>Configuration globale</h3>
+						<p>Donner son nom et email pour que Git sache qui fait les commits :</p>
+						<pre class="language-bash">
 	<button class="btn btn-light copy-btn">Copier</button>
 <code>
 git config --global user.name "Votre Nom" 
 git config --global user.email "votre.email@example.com"</code>
 </pre>
-				<p>On peut choisir son éditeur préféré, comme nano ou vim :</p>
-				<pre class="language-bash">
+						<p>On peut choisir son éditeur préféré, comme nano ou vim :</p>
+						<pre class="language-bash">
 	<button class="btn btn-light copy-btn">Copier</button>
 <code>
 git config --global core.editor "nano"</code>
 </pre>
-<p>	
+						<p>
 	Cette commande configure nano comme éditeur par défaut.
 </p>
-				<p>Pour voir toutes les configs :</p>
-				<pre class="language-bash">
+						<p>Pour voir toutes les configs :</p>
+						<pre class="language-bash">
 	<button class="btn btn-light copy-btn">Copier</button>
 <code>
 git config --list</code>
 </pre>
+					</div>
+				</div>
 			</section>
 
 			<!-- (3) DEPOTS -->
