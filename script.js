@@ -22,13 +22,40 @@ btnScrollTop.addEventListener('click', () => {
 
 // Dark/Light
 const toggleDarkModeBtn = document.getElementById('toggleDarkMode');
+let darkMode = localStorage.getItem('darkMode');
+
+// Function to enable dark mode
+const enableDarkMode = () => {
+	document.body.classList.add('dark-mode');
+	toggleDarkModeBtn.textContent = 'Light Mode';
+	toggleDarkModeBtn.setAttribute('aria-pressed', 'true');
+	localStorage.setItem('darkMode', 'enabled');
+}
+
+// Function to disable dark mode
+const disableDarkMode = () => {
+	document.body.classList.remove('dark-mode');
+	toggleDarkModeBtn.textContent = 'Dark Mode';
+	toggleDarkModeBtn.setAttribute('aria-pressed', 'false');
+	localStorage.setItem('darkMode', 'disabled');
+}
+
+// Check local storage on page load
+if (darkMode === 'enabled') {
+	enableDarkMode();
+} else {
+    // Default to light mode if no preference or preference is 'disabled'
+    disableDarkMode();
+}
+
+// Event listener for the toggle button
 toggleDarkModeBtn.addEventListener('click', () => {
-	const isDarkMode = document.body.classList.toggle('dark-mode');
-	toggleDarkModeBtn.setAttribute('aria-pressed', isDarkMode.toString());
-	if (isDarkMode) {
-		toggleDarkModeBtn.textContent = 'Light Mode';
+	// Re-check local storage in case it was changed in another tab (though less likely for localStorage)
+	darkMode = localStorage.getItem('darkMode');
+	if (darkMode !== 'enabled') {
+		enableDarkMode();
 	} else {
-		toggleDarkModeBtn.textContent = 'Dark Mode';
+		disableDarkMode();
 	}
 });
 
@@ -113,6 +140,17 @@ function changeActiveTocLink() {
 		if (linkHref && currentSectionId && linkHref.substring(1) === currentSectionId) {
 			link.classList.add('active-toc-link');
 			link.setAttribute('aria-current', 'page');
+
+			// Check if the active link is visible in the TOC, scroll if not
+			const tocNav = document.getElementById('navbarTOC'); // Get the TOC container
+			if (tocNav) {
+				const linkRect = link.getBoundingClientRect();
+				const tocRect = tocNav.getBoundingClientRect();
+
+				if (linkRect.top < tocRect.top || linkRect.bottom > tocRect.bottom) {
+					link.scrollIntoView({ behavior: 'smooth', block: 'nearest', inline: 'nearest' });
+				}
+			}
 		}
 	});
 }

@@ -63,6 +63,7 @@
 		<a href="#github-actions">21. CI/CD GitHub</a>
 		<a href="#glossaire">22. Glossaire Git</a>
 		<a href="#conclusion">23. Conclusion</a>
+		<a href="#workflows">24. Git Workflows</a>
 
 		<hr />
 		<button class="btn btn-sm btn-dark" id="toggleDarkMode" aria-pressed="false" aria-label="Basculer le mode d'affichage entre clair et sombre">Dark Mode</button>
@@ -1700,6 +1701,115 @@ jobs:
 				</p>
 				<p><strong>Bonne pratique de Git et bon code !</strong></p>
 
+			</section>
+
+			<!-- (24) GIT WORKFLOWS -->
+			<section id="workflows">
+				<h2>24. Git Workflows</h2>
+
+				<h3>Introduction aux Workflows Git</h3>
+				<p>Un workflow Git (ou flux de travail Git) est un ensemble de conventions, de recommandations et de stratégies sur la manière d'utiliser Git efficacement au sein d'un projet ou d'une équipe. Choisir un workflow adapté permet de structurer le développement, de faciliter la collaboration, de gérer les versions et de maintenir un historique de projet propre et compréhensible. Il n'existe pas de workflow universel ; le choix dépendra souvent de la taille de l'équipe, de la nature du projet (ex: application web, bibliothèque), du cycle de release, et des outils de CI/CD utilisés.</p>
+				<p>Les workflows définissent typiquement :</p>
+				<ul>
+					<li>La structure des branches (quelles branches sont utilisées et leur rôle).</li>
+					<li>Quand et comment les branches sont créées, fusionnées ou rebasées.</li>
+					<li>Comment les versions et les releases sont gérées.</li>
+					<li>Les conventions de nommage pour les branches et les commits.</li>
+				</ul>
+				<p>Nous allons explorer quelques workflows populaires.</p>
+
+				<h3>Gitflow Workflow</h3>
+				<p>Proposé par Vincent Driessen en 2010, Gitflow est un modèle de branching robuste, conçu pour des projets avec un cycle de release planifié. Il est particulièrement populaire pour les logiciels qui ont des versions distinctes (ex: v1.0, v1.1, v2.0).</p>
+				<h5>Branches Principales :</h5>
+				<ul>
+					<li><code>main</code> (ou <code>master</code>) : Contient le code de production stable, prêt à être déployé. Chaque commit sur <code>main</code> est une nouvelle version et devrait être tagué avec un numéro de version.</li>
+					<li><code>develop</code> : Sert de branche d'intégration principale pour les fonctionnalités. C'est ici que le code de la prochaine release est accumulé. Lorsque <code>develop</code> atteint un état stable et est prête pour une release, elle est mergée dans <code>main</code> et taguée.</li>
+				</ul>
+				<h5>Branches de Support :</h5>
+				<ul>
+					<li><strong>Branches de fonctionnalité (<code>feature/*</code>) :</strong>
+						<ul>
+							<li>Créées à partir de : <code>develop</code>.</li>
+							<li>Doivent être mergées dans : <code>develop</code>.</li>
+							<li>Convention de nommage : <code>feature/nom-de-la-fonction</code> (ex: <code>feature/user-authentication</code>).</li>
+							<li>But : Développer de nouvelles fonctionnalités de manière isolée. Ne doivent jamais interagir directement avec <code>main</code>.</li>
+						</ul>
+					</li>
+					<li><strong>Branches de release (<code>release/*</code>) :</strong>
+						<ul>
+							<li>Créées à partir de : <code>develop</code> (quand <code>develop</code> est prête pour une release).</li>
+							<li>Doivent être mergées dans : <code>develop</code> ET <code>main</code>.</li>
+							<li>Convention de nommage : <code>release/v1.0.1</code>.</li>
+							<li>But : Préparer une nouvelle release de production. Permet de faire des corrections de dernière minute, de la documentation, etc., sans interrompre le flux sur <code>develop</code>. Une fois prête, la branche de release est mergée dans <code>main</code> (et taguée) et aussi dans <code>develop</code> (pour y reporter les corrections de dernière minute).</li>
+						</ul>
+					</li>
+					<li><strong>Branches de correctif (<code>hotfix/*</code>) :</strong>
+						<ul>
+							<li>Créées à partir de : <code>main</code> (depuis le tag de la version à corriger).</li>
+							<li>Doivent être mergées dans : <code>develop</code> ET <code>main</code>.</li>
+							<li>Convention de nommage : <code>hotfix/description-du-correctif</code> (ex: <code>hotfix/security-vulnerability-fix</code>).</li>
+							<li>But : Corriger rapidement des bugs critiques en production. Permet de ne pas attendre le prochain cycle de release. Une fois le correctif appliqué, la branche est mergée dans <code>main</code> (et une nouvelle version est taguée) et également dans <code>develop</code>.</li>
+						</ul>
+					</li>
+				</ul>
+				<h5>Avantages de Gitflow :</h5>
+				<ul>
+					<li>Très structuré et clair, surtout pour les projets avec plusieurs versions et des cycles de release définis.</li>
+					<li>Bonne isolation entre les nouvelles fonctionnalités, la préparation des releases et les correctifs urgents.</li>
+					<li>Le rôle de chaque branche est bien défini.</li>
+				</ul>
+				<h5>Inconvénients de Gitflow :</h5>
+				<ul>
+					<li>Peut être perçu comme complexe, surtout pour les petits projets ou les équipes qui pratiquent l'intégration continue et le déploiement continu (CI/CD).</li>
+					<li>Le nombre de branches peut devenir important.</li>
+					<li>La branche <code>develop</code> peut parfois diverger significativement de <code>main</code> sur de longues périodes.</li>
+				</ul>
+
+				<h3>GitHub Flow</h3>
+				<p>GitHub Flow est un workflow plus simple et léger, popularisé par GitHub. Il est particulièrement bien adapté aux projets qui pratiquent le déploiement continu ou fréquent (ex: applications web).</p>
+				<h5>Principes Clés :</h5>
+				<ul>
+					<li><code>main</code> est toujours la branche principale et elle est **toujours déployable**. Ce qui est sur <code>main</code> est considéré comme stable et prêt pour la production.</li>
+					<li>Pour travailler sur quelque chose de nouveau (fonctionnalité, bugfix), créez une **branche descriptive** à partir de <code>main</code> (ex: <code>feature/user-profile</code>, <code>fix/login-bug</code>).</li>
+					<li>Poussez vos commits sur cette branche descriptive régulièrement sur le dépôt distant.</li>
+					<li>Lorsque vous avez besoin de feedback ou que la fonctionnalité est prête, ouvrez une **Pull Request (PR)**.</li>
+					<li>Après revue et approbation de la PR (et passage des tests automatisés), la branche est **mergée dans <code>main</code>**.</li>
+					<li>Une fois mergée dans <code>main</code>, les changements devraient être **déployés immédiatement** (ou très rapidement).</li>
+				</ul>
+				<h5>Processus Typique :</h5>
+				<ol>
+					<li>Créez une branche à partir de <code>main</code>: <code>git checkout -b feature/nouvelle-idee main</code></li>
+					<li>Faites vos commits sur cette branche.</li>
+					<li>Poussez la branche sur le serveur : <code>git push origin feature/nouvelle-idee</code></li>
+					<li>Ouvrez une Pull Request sur GitHub (ou GitLab, etc.).</li>
+					<li>Discutez, revoyez le code, ajoutez des commits si nécessaire (en poussant sur la même branche).</li>
+					<li>Une fois la PR approuvée et les tests CI passés, mergez-la dans <code>main</code> (souvent via l'interface de la plateforme).</li>
+					<li>Déployez <code>main</code>.</li>
+					<li>Supprimez la branche de fonctionnalité une fois mergée et déployée.</li>
+				</ol>
+				<h5>Avantages de GitHub Flow :</h5>
+				<ul>
+					<li>Simple à comprendre et à mettre en œuvre.</li>
+					<li>Favorise l'intégration continue et le déploiement continu (CI/CD).</li>
+					<li>Les Pull Requests facilitent la revue de code et la discussion avant l'intégration.</li>
+					<li><code>main</code> est toujours une source de vérité pour le code stable.</li>
+				</ul>
+				<h5>Inconvénients de GitHub Flow :</h5>
+				<ul>
+					<li>Moins adapté si vous avez besoin de gérer plusieurs versions en parallèle ou si vous avez des cycles de release longs et planifiés (Gitflow pourrait être mieux).</li>
+					<li>Nécessite une bonne discipline pour s'assurer que <code>main</code> est réellement toujours déployable.</li>
+					<li>La gestion des hotfixes peut nécessiter une petite adaptation (souvent, un hotfix suit le même flux : branche à partir de `main`, PR, merge, déploiement).</li>
+				</ul>
+
+				<h3>Trunk-Based Development (Mention)</h3>
+				<p>Le Trunk-Based Development (TBD) est un workflow où tous les développeurs collaborent sur le code dans une seule branche appelée "trunk" (souvent <code>main</code> ou <code>master</code>). Les changements sont intégrés fréquemment (au moins une fois par jour).</p>
+				<ul>
+					<li>Les fonctionnalités plus longues ou risquées sont souvent gérées avec des "Feature Flags" (bascules de fonctionnalités) pour permettre d'intégrer le code dans le trunk sans le rendre actif pour les utilisateurs finaux immédiatement.</li>
+					<li>Les branches, si utilisées, sont très courtes (quelques commits, durant moins d'un jour ou deux) avant d'être mergées dans le trunk.</li>
+					<li>Fortement dépendant d'une suite de tests automatisés robuste et d'une CI/CD performante.</li>
+					<li>Objectif : éviter les problèmes de "merge hell" en intégrant continuellement.</li>
+				</ul>
+				<p>Ce workflow est courant dans les environnements qui visent une très haute vélocité et un déploiement continu.</p>
 			</section>
 
 		</div><!-- Fin .container -->
