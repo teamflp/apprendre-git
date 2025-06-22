@@ -64,6 +64,9 @@
 		<a href="#glossaire">22. Glossaire Git</a>
 		<a href="#conclusion">23. Conclusion</a>
 		<a href="#workflows">24. Git Workflows</a>
+		<a href="#hooks-git">25. Hooks Git</a>
+		<a href="#gitattributes">26. Fins de Ligne & .gitattributes</a>
+		<a href="#git-rerere">27. `git rerere`</a>
 
 		<hr />
 		<button class="btn btn-sm btn-dark" id="toggleDarkMode" aria-pressed="false" aria-label="Basculer le mode d'affichage entre clair et sombre">Dark Mode</button>
@@ -1810,6 +1813,290 @@ jobs:
 					<li>Objectif : éviter les problèmes de "merge hell" en intégrant continuellement.</li>
 				</ul>
 				<p>Ce workflow est courant dans les environnements qui visent une très haute vélocité et un déploiement continu.</p>
+			</section>
+
+			<!-- (25) HOOKS GIT -->
+			<section id="hooks-git">
+				<h2>25. Hooks Git (Crochets Git)</h2>
+
+				<h3>Qu'est-ce qu'un Hook Git ?</h3>
+				<p>Les hooks (ou "crochets") Git sont des scripts que Git exécute automatiquement avant ou après certains événements importants de son cycle de vie, tels que la création de commits, le push de modifications, ou le changement de branches. Ils vous permettent de personnaliser le comportement de Git et d'automatiser des tâches spécifiques à votre workflow.</p>
+				<p>Par exemple, vous pouvez utiliser un hook pour :</p>
+				<ul>
+					<li>Vérifier que votre message de commit respecte un format standard.</li>
+					<li>Exécuter des tests unitaires avant de permettre un commit.</li>
+					<li>Notifier votre équipe d'intégration continue après un push réussi.</li>
+					<li>Vérifier la qualité du code (linting) avant qu'il ne soit commité.</li>
+				</ul>
+				<p>Les hooks sont locaux à chaque dépôt Git ; ils ne sont pas versionnés avec le dépôt lui-même et ne sont donc pas transférés lors d'un clone. Chaque développeur doit configurer ses propres hooks ou utiliser un mécanisme pour les partager au sein de l'équipe (par exemple, en les versionnant dans un dossier du projet et en ayant un script pour les copier/lier dans <code>.git/hooks</code>).</p>
+
+				<h3>Types de Hooks</h3>
+				<p>Il existe deux catégories principales de hooks :</p>
+				<ul>
+					<li><strong>Hooks côté client (Client-Side Hooks) :</strong> Ils sont exécutés sur la machine locale du développeur et affectent son workflow personnel. Ce sont ceux sur lesquels nous allons nous concentrer. Exemples : <code>pre-commit</code>, <code>prepare-commit-msg</code>, <code>commit-msg</code>, <code>post-commit</code>, <code>pre-push</code>.</li>
+					<li><strong>Hooks côté serveur (Server-Side Hooks) :</strong> Ils sont exécutés sur le serveur Git distant (par exemple, votre serveur GitHub Enterprise, GitLab, ou un serveur Git auto-hébergé) et sont utiles pour faire respecter des politiques pour le projet, envoyer des notifications, etc. Exemples : <code>pre-receive</code>, <code>update</code>, <code>post-receive</code>. La configuration de ces hooks dépend de la plateforme serveur.</li>
+				</ul>
+
+				<h3>Emplacement et Activation des Hooks</h3>
+				<p>Les hooks côté client résident dans le répertoire <code>.git/hooks/</code> de votre dépôt. Lorsque vous initialisez un nouveau dépôt avec <code>git init</code>, Git peuple ce dossier avec un ensemble d'exemples de scripts de hooks. Ces fichiers se terminent tous par <code>.sample</code> (par exemple, <code>pre-commit.sample</code>).</p>
+				<p>Pour activer un hook, il suffit de :</p>
+				<ol>
+					<li>Naviguer vers le répertoire <code>.git/hooks/</code>.</li>
+					<li>Supprimer l'extension <code>.sample</code> du fichier de hook que vous voulez activer. Par exemple, renommez <code>pre-commit.sample</code> en <code>pre-commit</code>.</li>
+					<li>Rendre le script exécutable : <code>chmod +x pre-commit</code> (sur Linux/macOS).</li>
+				</ol>
+				<p>Vous pouvez écrire vos scripts de hook dans n'importe quel langage de script que votre système peut exécuter (Bash, Perl, Python, Ruby, Node.js, etc.), tant que le script est exécutable et commence par un shebang correct (par exemple, <code>#!/bin/sh</code> ou <code>#!/usr/bin/env python3</code>).</p>
+				<p>Si un script de hook retourne un code de sortie non nul (différent de 0), l'action Git correspondante (commit, push, etc.) est généralement annulée.</p>
+
+				<h3>Exemple : Hook <code>pre-commit</code></h3>
+				<p>Le hook <code>pre-commit</code> est exécuté juste avant que Git ne crée le commit, après que vous ayez tapé <code>git commit</code> mais avant que l'éditeur de message de commit ne s'ouvre (sauf si vous utilisez <code>-m</code>).</p>
+				<p>Il est idéal pour effectuer des vérifications sur le code que vous êtes sur le point de commiter. Si le script <code>pre-commit</code> sort avec un code non nul, le commit est avorté.</p>
+				<p><strong>Scénario :</strong> S'assurer qu'aucun fichier ne contient de marqueurs de conflit de fusion (<code>&lt;&lt;&lt;&lt;&lt;&lt;&lt;</code>, <code>=======</code>, <code>&gt;&gt;&gt;&gt;&gt;&gt;&gt;</code>) oubliés.</p>
+				<p>Créez le fichier <code>.git/hooks/pre-commit</code> (et rendez-le exécutable) avec le contenu suivant :</p>
+				<pre class="language-bash">
+<button class="btn btn-light copy-btn" aria-label="Copier l'exemple de hook pre-commit">Copier</button>
+<code>#!/bin/sh
+
+# Vérifier les fichiers staged pour les marqueurs de conflit
+if git diff --cached --name-only --diff-filter=ACM | xargs grep -E -q -s '<<<<<<<|=======|>>>>>>>'; then
+  echo "ERREUR : Marqueurs de conflit de fusion détectés dans les fichiers staged."
+  echo "Veuillez résoudre les conflits avant de commiter."
+  exit 1
+fi
+
+# Un autre exemple : interdire les commits directs sur la branche main (simple vérification)
+BRANCH_NAME=$(git rev-parse --abbrev-ref HEAD)
+if [ "$BRANCH_NAME" = "main" ]; then
+  # echo "ERREUR : Les commits directs sur la branche 'main' ne sont pas autorisés."
+  # echo "Veuillez utiliser une branche de fonctionnalité et une Pull Request."
+  # exit 1 # Décommentez pour activer cette règle
+fi
+
+# Si tout va bien, sortir avec 0 pour permettre le commit
+exit 0</code></pre>
+				<p>Ce script vérifie d'abord les conflits. La partie commentée montre comment vous pourriez ajouter une règle pour interdire les commits sur `main`.</p>
+
+				<h3>Exemple : Hook <code>commit-msg</code></h3>
+				<p>Le hook <code>commit-msg</code> prend un argument : le chemin vers un fichier temporaire qui contient le message de commit que vous avez rédigé. Il est exécuté après que vous ayez fermé l'éditeur de message de commit (ou après avoir fourni un message avec <code>-m</code>).</p>
+				<p>Il est utilisé pour valider ou reformater le message de commit. S'il sort avec un code non nul, le commit est avorté.</p>
+				<p><strong>Scénario :</strong> S'assurer que le message de commit respecte un format simple (par exemple, ne commence pas par "WIP", a une longueur minimale).</p>
+				<p>Créez <code>.git/hooks/commit-msg</code> (et rendez-le exécutable) :</p>
+				<pre class="language-bash">
+<button class="btn btn-light copy-btn" aria-label="Copier l'exemple de hook commit-msg">Copier</button>
+<code>#!/bin/sh
+
+COMMIT_MSG_FILE=$1
+COMMIT_MSG=$(cat "$COMMIT_MSG_FILE")
+
+# Vérifier si le message commence par "WIP" (Work In Progress)
+if echo "$COMMIT_MSG" | grep -qE '^WIP:'; then
+  echo "ATTENTION : Le message de commit commence par 'WIP:'."
+  echo "Ceci est permis, mais n'oubliez pas de le finaliser plus tard."
+  # Ne pas faire exit 1 ici si on veut juste avertir
+fi
+
+# Vérifier une longueur minimale (par exemple, 10 caractères, sans compter les commentaires)
+ACTUAL_MSG=$(echo "$COMMIT_MSG" | grep -v '^#') # Ignorer les lignes de commentaire
+if [ ${#ACTUAL_MSG} -lt 10 ]; then
+  echo "ERREUR : Le message de commit est trop court (moins de 10 caractères)."
+  echo "Veuillez fournir un message plus descriptif."
+  exit 1
+fi
+
+# Vérifier la présence d'un ticket ID (exemple: [PROJECT-123])
+# if ! echo "$COMMIT_MSG" | grep -qE '\[[A-Z]+-[0-9]+\]'; then
+#   echo "ERREUR : Le message de commit doit inclure un ID de ticket (ex: [PROJECT-123])."
+#   exit 1
+# fi
+
+
+# Si tout va bien
+exit 0</code></pre>
+				<p>Ce script vérifie quelques règles simples. Vous pouvez l'adapter pour des formats plus stricts comme <a href="#commit-conventions">Conventional Commits</a>.</p>
+
+				<h3>Autres Hooks Utiles (Client-Side)</h3>
+				<ul>
+					<li><strong><code>prepare-commit-msg</code> :</strong> Exécuté avant l'éditeur de message de commit mais après la création du message par défaut. Utile pour insérer un modèle de message ou modifier le message généré automatiquement (par exemple, pour les commits de merge ou squash).</li>
+					<li><strong><code>post-commit</code> :</strong> Exécuté juste après qu'un commit a été effectué avec succès. Utile pour des notifications ou des tâches de nettoyage.</li>
+					<li><strong><code>pre-rebase</code> :</strong> Exécuté avant que <code>git rebase</code> ne commence. Peut être utilisé pour empêcher le rebase de certaines branches.</li>
+					<li><strong><code>post-checkout</code> :</strong> Exécuté après un <code>git checkout</code> réussi. Utile pour nettoyer le répertoire de travail, installer des dépendances si un certain fichier a changé, etc.</li>
+					<li><strong><code>pre-push</code> :</strong> Exécuté avant que <code>git push</code> n'envoie les commits au distant. C'est un excellent endroit pour exécuter des tests d'intégration plus longs ou des vérifications finales avant de partager votre code. S'il échoue, le push est annulé.</li>
+				</ul>
+
+				<h3>Langages pour les Hooks</h3>
+				<p>Comme mentionné, vous pouvez utiliser la plupart des langages de script. Le Shell (Bash, sh) est courant pour sa simplicité et sa portabilité sur les systèmes Unix-like. Python, Ruby, Perl et Node.js sont également de bons choix, surtout si la logique du hook devient plus complexe ou si vous voulez utiliser des bibliothèques existantes.</p>
+				<p>N'oubliez pas le shebang (<code>#!</code>) au début de votre script pour indiquer l'interpréteur et de rendre le fichier de hook exécutable.</p>
+				<div class="alert alert-info" role="alert">
+				  <strong>Conseil :</strong> Il existe des outils et des frameworks (comme <a href="https://pre-commit.com/" target="_blank" rel="noopener noreferrer">pre-commit.com</a>) qui aident à gérer et partager des hooks Git pré-construits ou personnalisés au sein d'une équipe, simplifiant leur installation et leur maintenance.
+				</div>
+			</section>
+
+			<!-- (26) FINS DE LIGNE & .GITATTRIBUTES -->
+			<section id="gitattributes">
+				<h2>26. Fins de Ligne & <code>.gitattributes</code></h2>
+
+				<h3>Le Problème des Fins de Ligne (CRLF vs LF)</h3>
+				<p>L'un des problèmes les plus courants et frustrants lorsque l'on travaille en équipe sur différents systèmes d'exploitation est la gestion des fins de ligne. Les systèmes Windows utilisent une séquence de deux caractères : retour chariot (Carriage Return, CR) et saut de ligne (Line Feed, LF), souvent notée CRLF. Les systèmes Unix (Linux, macOS) utilisent uniquement un saut de ligne (LF).</p>
+				<p>Si les développeurs d'une équipe utilisent des systèmes différents sans configuration appropriée, Git peut :</p>
+				<ul>
+					<li>Signaler des modifications sur chaque ligne d'un fichier alors que seul le type de fin de ligne a changé.</li>
+					<li>Corrompre les fins de ligne, rendant les scripts non exécutables sur certains systèmes ou causant des problèmes avec certains outils.</li>
+				</ul>
+
+				<h3>Configuration Globale (<code>core.autocrlf</code>)</h3>
+				<p>Git tente de gérer ce problème avec le paramètre de configuration <code>core.autocrlf</code>. Il a trois valeurs possibles :</p>
+				<ul>
+					<li><strong><code>true</code> (Windows) :</strong>
+						<code>git config --global core.autocrlf true</code>
+						<br>Sur checkout (récupération) : Git convertit les fins de ligne LF en CRLF.
+						<br>Sur commit (validation) : Git convertit les fins de ligne CRLF en LF.
+						<br>C'est la configuration recommandée pour les utilisateurs Windows.
+					</li>
+					<li><strong><code>input</code> (macOS/Linux) :</strong>
+						<code>git config --global core.autocrlf input</code>
+						<br>Sur checkout : Git ne fait rien.
+						<br>Sur commit : Git convertit les fins de ligne CRLF en LF.
+						<br>C'est la configuration recommandée pour les utilisateurs macOS et Linux.
+					</li>
+					<li><strong><code>false</code> :</strong>
+						<code>git config --global core.autocrlf false</code>
+						<br>Git ne fait aucune conversion. Les fins de ligne sont commitées telles quelles. Non recommandé pour les projets multi-OS.
+					</li>
+				</ul>
+				<p>Bien que <code>core.autocrlf</code> aide, il n'est pas toujours suffisant et peut être source de confusion car il dépend de la configuration locale de chaque développeur. Une solution plus robuste et centralisée est d'utiliser un fichier <code>.gitattributes</code>.</p>
+
+				<h3>Le Fichier <code>.gitattributes</code> : Introduction</h3>
+				<p>Le fichier <code>.gitattributes</code> permet de déclarer des attributs spécifiques pour des chemins (fichiers ou répertoires) dans votre dépôt. Ces attributs indiquent à Git comment traiter ces chemins. Contrairement à <code>.gitignore</code> qui spécifie les fichiers à ignorer, <code>.gitattributes</code> définit des comportements pour les fichiers suivis par Git.</p>
+				<p>Ce fichier doit être commité dans votre dépôt pour que ses règles s'appliquent de manière cohérente à tous les collaborateurs. Il est généralement placé à la racine du projet.</p>
+				<p>Chaque ligne du fichier <code>.gitattributes</code> suit le format :<br>
+				<code>pattern attr1 attr2 ...</code><br>
+				Où <code>pattern</code> est un motif de fichier (similaire à ceux de <code>.gitignore</code>, ex: <code>*.txt</code>, <code>src/*.js</code>) et <code>attr1</code>, <code>attr2</code> sont les attributs que vous assignez.</p>
+
+				<h3>Gérer les Fins de Ligne via <code>.gitattributes</code></h3>
+				<p>L'attribut le plus important pour la gestion des fins de ligne est <code>text</code>. Combiné avec <code>eol</code>, il offre un contrôle précis :</p>
+				<ul>
+					<li><strong><code>* text=auto</code></strong>
+						<p>C'est la configuration la plus courante et recommandée pour commencer. Pour tous les fichiers (<code>*</code>), Git essaiera de deviner s'il s'agit de fichiers texte. Si c'est le cas, il normalisera les fins de ligne en LF dans le dépôt et les convertira aux fins de ligne natives du système d'exploitation de l'utilisateur lors du checkout (CRLF pour Windows, LF pour macOS/Linux).</p>
+					</li>
+					<li><strong><code>*.txt text</code></strong>
+						<p>Traite tous les fichiers <code>.txt</code> comme des fichiers texte et normalise leurs fins de ligne (LF dans le dépôt).</p>
+					</li>
+					<li><strong><code>*.sh text eol=lf</code></strong>
+						<p>Traite tous les scripts shell (<code>.sh</code>) comme des fichiers texte et s'assure qu'ils utilisent des fins de ligne LF, que ce soit dans le dépôt ou dans le répertoire de travail, quel que soit le système d'exploitation. C'est crucial car les scripts shell avec des fins de ligne CRLF ne fonctionnent pas correctement sur les systèmes Unix.</p>
+					</li>
+					<li><strong><code>*.bat text eol=crlf</code></strong>
+						<p>Traite tous les scripts batch Windows (<code>.bat</code>) comme des fichiers texte et s'assure qu'ils utilisent des fins de ligne CRLF.</p>
+					</li>
+				</ul>
+				<p><strong>Exemple de fichier <code>.gitattributes</code> :</strong></p>
+				<pre class="language-text">
+<button class="btn btn-light copy-btn" aria-label="Copier l'exemple de fichier .gitattributes">Copier</button>
+<code># Définit le comportement par défaut pour tous les fichiers
+* text=auto
+
+# Force les fins de ligne LF pour les types de fichiers sensibles
+*.js    text eol=lf
+*.jsx   text eol=lf
+*.json  text eol=lf
+*.css   text eol=lf
+*.html  text eol=lf
+*.sh    text eol=lf
+*.py    text eol=lf
+*.md    text eol=lf
+*.xml   text eol=lf
+*.yml   text eol=lf
+*.yaml  text eol=lf
+
+# Pour les fichiers Windows spécifiques, forcer CRLF
+*.bat   text eol=crlf
+*.cmd   text eol=crlf
+*.sln   text eol=crlf
+*.vcproj text eol=crlf
+
+# Marquer les fichiers binaires (Git ne tentera pas de les convertir ou de les differ)
+*.png   binary
+*.jpg   binary
+*.jpeg  binary
+*.gif   binary
+*.pdf   binary
+*.zip   binary
+*.exe   binary
+*.dll   binary
+*.o     binary
+*.a     binary
+*.obj   binary
+*.so    binary</code></pre>
+				<p>Après avoir ajouté ou modifié un fichier <code>.gitattributes</code>, il est possible que vous deviez rafraîchir les fichiers de votre répertoire de travail pour que les nouvelles règles s'appliquent. Git ne modifie pas automatiquement les fichiers déjà présents. Vous pouvez le faire en :</p>
+				<pre class="language-bash">
+<button class="btn btn-light copy-btn" aria-label="Copier les commandes pour rafraîchir les fichiers après modification de .gitattributes">Copier</button>
+<code>git add . --renormalize</code></pre>
+				<p>Puis commitez les changements si Git détecte des normalisations de fins de ligne.</p>
+
+				<h3>Marquer les Fichiers Binaires</h3>
+				<p>Il est important d'indiquer à Git quels fichiers sont binaires. Git essaiera de ne pas modifier les fins de ligne de ces fichiers et ne tentera pas de générer des diffs textuels pour eux.</p>
+				<p>Vous pouvez le faire avec l'attribut <code>binary</code> ou en spécifiant <code>-text</code> :</p>
+				<ul>
+					<li><code>*.png binary</code></li>
+					<li><code>*.jpg -text</code> (signifie "pas un fichier texte")</li>
+				</ul>
+				<p>Cela empêche la corruption de fichiers binaires par les conversions de fins de ligne et rend les opérations comme <code>git diff</code> plus performantes pour ces fichiers.</p>
+				<div class="alert alert-info" role="alert">
+					Utiliser un fichier <code>.gitattributes</code> bien configuré est une bonne pratique pour tout projet, surtout ceux impliquant plusieurs collaborateurs ou systèmes d'exploitation, afin d'éviter les problèmes liés aux fins de ligne et de s'assurer que Git traite correctement les différents types de fichiers.
+				</div>
+			</section>
+
+			<!-- (27) GIT RERERE -->
+			<section id="git-rerere">
+				<h2>27. <code>git rerere</code> (Reuse Recorded Resolution)</h2>
+
+				<h3>Le Problème : Résoudre les Mêmes Conflits Répétitivement</h3>
+				<p>Lorsque vous travaillez sur des branches qui vivent longtemps et que vous rebasez fréquemment sur une branche principale active (comme <code>main</code> ou <code>develop</code>), ou lorsque vous effectuez des merges répétitifs entre les mêmes branches, vous pouvez vous retrouver à résoudre les mêmes conflits de fusion encore et encore. Cela peut être fastidieux et source d'erreurs.</p>
+				<p>Par exemple, si vous avez une branche de fonctionnalité et que vous la rebasez sur <code>main</code>, vous résolvez des conflits. Si, quelques jours plus tard, vous rebasez à nouveau cette même branche sur une version plus récente de <code>main</code>, il est probable que beaucoup des mêmes conflits réapparaissent.</p>
+
+				<h3>Qu'est-ce que <code>git rerere</code> et Comment Ça Marche ?</h3>
+				<p><code>rerere</code> signifie "<strong>re</strong>use <strong>re</strong>corded <strong>re</strong>solution" (réutiliser la résolution enregistrée). C'est une fonctionnalité de Git qui observe comment vous résolvez les conflits de hunk (morceaux de code en conflit) et enregistre ces résolutions. Si Git rencontre à nouveau exactement le même conflit, il peut automatiquement appliquer la résolution que vous aviez précédemment fournie.</p>
+				<p>Lorsqu'un conflit de fusion se produit et que <code>rerere</code> est activé :</p>
+				<ol>
+					<li>Git vérifie si ce conflit exact a déjà été résolu et enregistré.</li>
+					<li>S'il trouve un enregistrement correspondant, il utilise la résolution précédente pour modifier les fichiers dans votre répertoire de travail. Les fichiers peuvent alors apparaître comme résolus (ou partiellement résolus si de nouveaux conflits sont présents).</li>
+					<li>Si le conflit est nouveau, Git enregistre l'état pré-résolution du conflit. Une fois que vous avez résolu le conflit manuellement et que vous avez fait <code>git add</code> sur les fichiers concernés, Git enregistre la manière dont vous l'avez résolu.</li>
+				</ol>
+				<p>Cela ne signifie pas que vous n'aurez plus jamais à résoudre de conflits, mais cela peut considérablement réduire le nombre de conflits identiques que vous devez traiter manuellement.</p>
+
+				<h3>Activer <code>git rerere</code></h3>
+				<p>La fonctionnalité <code>rerere</code> n'est pas activée par défaut. Pour l'activer globalement pour tous vos dépôts :</p>
+				<pre class="language-bash">
+<button class="btn btn-light copy-btn" aria-label="Copier la commande pour activer git rerere globalement">Copier</button>
+<code>git config --global rerere.enabled true</code></pre>
+				<p>Vous pouvez également l'activer uniquement pour un dépôt spécifique en omettant l'option <code>--global</code> dans le répertoire de ce dépôt.</p>
+				<p>Une fois activé, Git créera un répertoire <code>rr-cache</code> dans votre dossier <code>.git</code> pour stocker les résolutions enregistrées. Ce cache est spécifique à votre dépôt local (il n'est pas poussé vers le distant, bien qu'il puisse être partagé manuellement si nécessaire, mais c'est un cas d'usage plus avancé).</p>
+				<p>Il existe aussi l'option <code>rerere.autoupdate</code> :</p>
+				<pre class="language-bash">
+<button class="btn btn-light copy-btn" aria-label="Copier la commande pour activer rerere.autoupdate">Copier</button>
+<code>git config --global rerere.autoupdate true</code></pre>
+				<p>Si <code>rerere.autoupdate</code> est à <code>true</code> (par défaut à <code>false</code>), Git mettra automatiquement à jour l'index (comme si vous aviez fait <code>git add</code>) pour les hunks qu'il a pu résoudre automatiquement grâce à <code>rerere</code>. Cela peut vous faire gagner une étape, mais certains préfèrent vérifier la résolution automatique avant de l'ajouter à l'index.</p>
+
+				<h3>Quand est-ce le plus utile ?</h3>
+				<ul>
+					<li><strong>Rebases fréquents :</strong> Si vous maintenez une branche de fonctionnalité à jour en la rebasant régulièrement sur une branche cible qui évolue rapidement.</li>
+					<li><strong>Branches de longue durée :</strong> Pour les branches qui divergent significativement et qui sont mergées ou rebasées périodiquement.</li>
+					<li><strong>Maintenance de plusieurs versions :</strong> Lors du backporting de correctifs sur d'anciennes branches de release, où des conflits similaires peuvent survenir.</li>
+					<li><strong>Lors de l'utilisation de <code>git bisect</code> :</strong> Si la recherche binaire implique des merges ou des rebases qui génèrent des conflits répétitifs.</li>
+				</ul>
+
+				<h3>Commandes Associées (Optionnel)</h3>
+				<p>Bien que <code>rerere</code> fonctionne principalement en arrière-plan, quelques commandes peuvent être utiles pour interagir avec le cache <code>rr-cache</code> :</p>
+				<ul>
+					<li><code>git rerere status</code> : Affiche les conflits que <code>rerere</code> suit actuellement.</li>
+					<li><code>git rerere diff</code> : Affiche les diffs des résolutions enregistrées.</li>
+					<li><code>git rerere remaining</code> : Affiche les conflits qui nécessitent encore une résolution manuelle (si <code>rerere.autoupdate</code> est false ou si certains hunks n'ont pas pu être résolus).</li>
+					<li><code>git rerere clear</code> : Supprime tous les enregistrements du cache <code>rr-cache</code> pour le dépôt courant (utile si vous pensez qu'une résolution incorrecte a été enregistrée).</li>
+					<li><code>git rerere gc</code> : Effectue un nettoyage (garbage collection) des anciennes résolutions enregistrées qui ne sont plus pertinentes.</li>
+				</ul>
+				<p>En général, vous n'aurez pas besoin d'utiliser ces commandes fréquemment, car l'avantage principal de <code>rerere</code> est son automatisation silencieuse.</p>
+				<div class="alert alert-success" role="alert">
+					<strong>En résumé :</strong> <code>git rerere</code> est un outil discret mais puissant qui apprend de vos résolutions de conflits passées pour vous faire gagner du temps sur des conflits identiques à l'avenir. Activez-le et laissez-le travailler en arrière-plan !
+				</div>
 			</section>
 
 		</div><!-- Fin .container -->
