@@ -158,51 +158,55 @@
 			</section>
 
 			<!-- (3) DEPOTS -->
-			<section id="depots">
-				<h2>3. Initialiser et gérer un dépôt</h2>
-				<h3>Initialiser un nouveau dépôt</h3>
-				<p>
-					Pour commencer à suivre un projet avec Git, on fait :
-				</p>
-				<pre class="language-bash">
-					<button class="btn btn-light copy-btn">Copier</button>
-					<code>git init</code>
-				</pre>
-				<p>
-					Cela crée un dossier caché <code>.git</code> qui contient toutes les infos de suivi (commits,
-					historique...).
-				</p>
+			<section id="depots" class="mb-4">
+				<div class="card shadow-sm">
+					<div class="card-body">
+						<h2>3. Initialiser et gérer un dépôt</h2>
+						<h3>Initialiser un nouveau dépôt</h3>
+						<p>
+							Pour commencer à suivre un projet avec Git, on fait :
+						</p>
+						<pre class="language-bash">
+							<button class="btn btn-light copy-btn">Copier</button>
+							<code>git init</code>
+						</pre>
+						<p>
+							Cela crée un dossier caché <code>.git</code> qui contient toutes les infos de suivi (commits,
+							historique...).
+						</p>
 
-				<h3>Cloner un dépôt existant</h3>
-				<p>
-					Si un projet existe déjà sur GitHub ou ailleurs, on peut le copier localement :
-				</p>
-				<pre class="language-bash">
-					<button class="btn btn-light copy-btn">Copier</button>
-					<code>git clone https://github.com/utilisateur/projet.git</code>
-				</pre>
-				<p>
-					Cela crée un dossier avec tout le code et l’historique.
-				</p>
+						<h3>Cloner un dépôt existant</h3>
+						<p>
+							Si un projet existe déjà sur GitHub ou ailleurs, on peut le copier localement :
+						</p>
+						<pre class="language-bash">
+							<button class="btn btn-light copy-btn">Copier</button>
+							<code>git clone https://github.com/utilisateur/projet.git</code>
+						</pre>
+						<p>
+							Cela crée un dossier avec tout le code et l’historique.
+						</p>
 
-				<h3>Ajouter un dépôt distant</h3>
-				<p>
-					Pour lier son dossier local à un dépôt en ligne (ex: GitHub), on utilise :
-				</p>
-				<pre class="language-bash">
-					<button class="btn btn-light copy-btn">Copier</button>
-				<code>git remote add origin https://github.com/utilisateur/projet.git</code>
-				</pre>
+						<h3>Ajouter un dépôt distant</h3>
+						<p>
+							Pour lier son dossier local à un dépôt en ligne (ex: GitHub), on utilise :
+						</p>
+						<pre class="language-bash">
+							<button class="btn btn-light copy-btn">Copier</button>
+						<code>git remote add origin https://github.com/utilisateur/projet.git</code>
+						</pre>
 
-				<h3>Lister / Renommer / Supprimer un dépôt distant</h3>
-				<pre class="language-bash">
-					<button class="btn btn-light copy-btn">Copier</button>
-					<code>
-						git remote -v              # Voir les dépôts distants
-						git remote rename origin old   # Renommer 'origin' en 'old'
-						git remote remove origin       # Supprimer le remote 'origin'
-					</code>
-				</pre>
+						<h3>Lister / Renommer / Supprimer un dépôt distant</h3>
+						<pre class="language-bash">
+							<button class="btn btn-light copy-btn">Copier</button>
+							<code>
+								git remote -v              # Voir les dépôts distants
+								git remote rename origin old   # Renommer 'origin' en 'old'
+								git remote remove origin       # Supprimer le remote 'origin'
+							</code>
+						</pre>
+					</div>
+				</div>
 			</section>
 
 			<!-- (4) SUIVI & COMMIT -->
